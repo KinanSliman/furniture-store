@@ -1,10 +1,26 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
+import * as dotenv from 'dotenv';
 import * as schema from './schema';
+
+// Load environment variables
+dotenv.config();
+
+// Validate DATABASE_URL
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not defined in environment variables');
+}
+
+// Parse DATABASE_URL manually (same approach that worked for seed)
+const url = new URL(process.env.DATABASE_URL);
 
 // Create PostgreSQL connection pool
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  host: url.hostname,
+  port: parseInt(url.port),
+  database: url.pathname.slice(1),
+  user: url.username,
+  password: url.password,
   max: 20, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
