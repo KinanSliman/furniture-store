@@ -171,6 +171,61 @@
 - ✅ `/admin/customers` - List page with filters
 - ✅ `/admin/customers/[id]` - Detail page with order history
 
+### 10. **Analytics & Reports** ✅ **COMPLETE**
+- ✅ Revenue analytics with daily breakdown
+- ✅ Sales analytics (top products & order status)
+- ✅ Area chart for revenue over time
+- ✅ Bar chart for daily orders (paid vs pending)
+- ✅ Pie chart for order status distribution
+- ✅ Date range selector (7/30/60/90 days)
+- ✅ Summary statistics display
+- ✅ Total revenue & average order value
+- ✅ Top 10 selling products by quantity
+- ✅ Order status breakdown
+- ✅ Responsive charts with Recharts
+- ✅ Loading states
+- ✅ Toast notifications
+
+#### Analytics API Routes ✅
+- ✅ `GET /api/admin/analytics/revenue` - Revenue data with date breakdown
+- ✅ `GET /api/admin/analytics/sales` - Sales data (top products, status breakdown, daily orders)
+
+#### Analytics Page ✅
+- ✅ `/admin/analytics` - Comprehensive analytics dashboard with charts
+
+### 11. **Discounts/Coupons Management** ✅ **COMPLETE**
+- ✅ List all discount codes with pagination
+- ✅ Create new discount codes
+- ✅ Edit existing discount codes
+- ✅ Delete discount codes with confirmation
+- ✅ Toggle active/inactive status
+- ✅ Discount types support:
+  - Percentage off
+  - Fixed amount off
+  - Free shipping
+- ✅ Discount code validation & normalization
+- ✅ Usage tracking (usesCount / maxUses)
+- ✅ Usage limits (max total uses, max per customer)
+- ✅ Minimum purchase requirement
+- ✅ Date-based validity (start date & expiration date)
+- ✅ Expiration detection & display
+- ✅ First-time customer only restriction
+- ✅ Modal-based create/edit interface
+- ✅ Auto-uppercase code normalization
+- ✅ Form validation
+- ✅ Toast notifications
+- ✅ Responsive design
+
+#### Discounts API Routes ✅
+- ✅ `GET /api/admin/discounts` - List with pagination, search, filters
+- ✅ `POST /api/admin/discounts` - Create discount code
+- ✅ `GET /api/admin/discounts/[id]` - Get single discount
+- ✅ `PATCH /api/admin/discounts/[id]` - Update discount
+- ✅ `DELETE /api/admin/discounts/[id]` - Delete discount
+
+#### Discounts Page ✅
+- ✅ `/admin/discounts` - List with inline create/edit modal
+
 ---
 
 ## 📁 File Structure Created
@@ -195,8 +250,18 @@ ecommerce-platform/
 │   │   │   │   ├── page.tsx            ✅ Orders list page
 │   │   │   │   └── [id]/
 │   │   │   │       └── page.tsx        ✅ Order detail page
-│   │   │   └── settings/
-│   │   │       └── page.tsx            ✅ Settings page
+│   │   │   ├── settings/
+│   │   │   │   └── page.tsx            ✅ Settings page
+│   │   │   ├── categories/
+│   │   │   │   └── page.tsx            ✅ Categories page
+│   │   │   ├── customers/
+│   │   │   │   ├── page.tsx            ✅ Customers list page
+│   │   │   │   └── [id]/
+│   │   │   │       └── page.tsx        ✅ Customer detail page
+│   │   │   ├── analytics/
+│   │   │   │   └── page.tsx            ✅ Analytics page
+│   │   │   └── discounts/
+│   │   │       └── page.tsx            ✅ Discounts page
 │   │   └── api/
 │   │       └── admin/
 │   │           ├── auth/
@@ -214,12 +279,29 @@ ecommerce-platform/
 │   │           │   ├── route.ts        ✅ Products list/create API
 │   │           │   └── [id]/
 │   │           │       └── route.ts    ✅ Get/Update/Delete product API
-│   │           └── orders/
-│   │               ├── route.ts        ✅ Orders list API
+│   │           ├── orders/
+│   │           │   ├── route.ts        ✅ Orders list API
+│   │           │   └── [id]/
+│   │           │       ├── route.ts    ✅ Get/Update order API
+│   │           │       └── status/
+│   │           │           └── route.ts ✅ Update order status API
+│   │           ├── categories/
+│   │           │   ├── route.ts        ✅ Categories list/create API
+│   │           │   └── [id]/
+│   │           │       └── route.ts    ✅ Get/Update/Delete category API
+│   │           ├── customers/
+│   │           │   ├── route.ts        ✅ Customers list API
+│   │           │   └── [id]/
+│   │           │       └── route.ts    ✅ Get/Update customer API
+│   │           ├── analytics/
+│   │           │   ├── revenue/
+│   │           │   │   └── route.ts    ✅ Revenue analytics API
+│   │           │   └── sales/
+│   │           │       └── route.ts    ✅ Sales analytics API
+│   │           └── discounts/
+│   │               ├── route.ts        ✅ Discounts list/create API
 │   │               └── [id]/
-│   │                   ├── route.ts    ✅ Get/Update order API
-│   │                   └── status/
-│   │                       └── route.ts ✅ Update order status API
+│   │                   └── route.ts    ✅ Get/Update/Delete discount API
 │   ├── db/
 │   │   ├── schema.ts                   ✅ (from earlier)
 │   │   └── db.ts                       ✅ (from earlier)
@@ -434,9 +516,11 @@ export function LoadingSpinner() {
 6. ✅ **Settings Management** (Store, Regional, Tax, Email)
 7. ✅ **Categories Management** (Full CRUD with hierarchy)
 8. ✅ **Customers Management** (List & Detail views)
-9. ✅ Toast Notifications
-10. ✅ Utilities & Helpers
-11. ✅ **Dashboard Stats API** (Real-time calculations)
+9. ✅ **Analytics & Reports** (Charts & graphs with Recharts)
+10. ✅ **Discounts/Coupons** (Full CRUD with validation)
+11. ✅ Toast Notifications
+12. ✅ Utilities & Helpers
+13. ✅ **Dashboard Stats API** (Real-time calculations)
 
 **Dashboard Stats Include:**
 - ✅ Revenue tracking (current month vs last month)
@@ -452,14 +536,17 @@ export function LoadingSpinner() {
 
 **High Priority:**
 - [ ] Image upload system for products
+- [ ] Product images/gallery management
+- [ ] Reviews & ratings management
 
 **Medium Priority:**
-- [ ] Customers management
-- [ ] Categories management
-- [ ] Analytics/Reports
-- [ ] Discounts/Coupons management
+- [ ] Inventory management & stock alerts
+- [ ] Bulk product operations
+- [ ] Order fulfillment & shipping labels
 
 **Low Priority:**
-- [ ] Shipping configuration
-- [ ] Email templates
-- [ ] Tax settings
+- [ ] Shipping zones & rates configuration
+- [ ] Email templates customization
+- [ ] Advanced tax rules
+- [ ] Webhooks & integrations
+- [ ] Activity logs & audit trails
