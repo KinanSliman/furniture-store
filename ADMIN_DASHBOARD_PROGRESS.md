@@ -124,6 +124,53 @@
 #### Settings Page ✅
 - ✅ `/admin/settings` - Comprehensive settings with tabs
 
+### 8. **Categories Management** ✅ **COMPLETE**
+- ✅ List all categories with hierarchy display
+- ✅ Parent/child category relationships
+- ✅ Create new categories
+- ✅ Edit existing categories
+- ✅ Delete categories (with validation)
+- ✅ Toggle active/inactive status
+- ✅ Auto-generate slugs
+- ✅ Display order management
+- ✅ Subcategory count badges
+- ✅ Modal-based create/edit interface
+- ✅ Form validation
+- ✅ Toast notifications
+- ✅ Responsive design
+
+#### Categories API Routes ✅
+- ✅ `GET /api/admin/categories` - List with pagination & filters
+- ✅ `POST /api/admin/categories` - Create category
+- ✅ `GET /api/admin/categories/[id]` - Get single category with relations
+- ✅ `PATCH /api/admin/categories/[id]` - Update category
+- ✅ `DELETE /api/admin/categories/[id]` - Delete category (with validation)
+
+#### Categories Page ✅
+- ✅ `/admin/categories` - List with hierarchy and inline create/edit modal
+
+### 9. **Customers Management** ✅ **COMPLETE**
+- ✅ List all customers with pagination
+- ✅ Search by name/email
+- ✅ Filter by status (active/inactive)
+- ✅ Filter by email verification
+- ✅ Sort by join date, email, last login
+- ✅ View customer details
+- ✅ Customer stats (total orders, total spent, avg order value)
+- ✅ Order history per customer
+- ✅ Email & phone verification badges
+- ✅ Last login tracking
+- ✅ Responsive design
+
+#### Customers API Routes ✅
+- ✅ `GET /api/admin/customers` - List with pagination, search, filters
+- ✅ `GET /api/admin/customers/[id]` - Get customer with order history
+- ✅ `PATCH /api/admin/customers/[id]` - Update customer
+
+#### Customers Pages ✅
+- ✅ `/admin/customers` - List page with filters
+- ✅ `/admin/customers/[id]` - Detail page with order history
+
 ---
 
 ## 📁 File Structure Created
@@ -385,9 +432,11 @@ export function LoadingSpinner() {
 4. ✅ Products Management (Full CRUD)
 5. ✅ Orders Management (Full CRUD)
 6. ✅ **Settings Management** (Store, Regional, Tax, Email)
-7. ✅ Toast Notifications
-8. ✅ Utilities & Helpers
-9. ✅ **Dashboard Stats API** (Real-time calculations)
+7. ✅ **Categories Management** (Full CRUD with hierarchy)
+8. ✅ **Customers Management** (List & Detail views)
+9. ✅ Toast Notifications
+10. ✅ Utilities & Helpers
+11. ✅ **Dashboard Stats API** (Real-time calculations)
 
 **Dashboard Stats Include:**
 - ✅ Revenue tracking (current month vs last month)
