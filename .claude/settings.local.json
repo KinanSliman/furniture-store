@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(echo \"\n\n### 10. **Analytics & Reports** ✅ **COMPLETE**\n- ✅ Revenue analytics with date range selection\n- ✅ Daily revenue tracking\n- ✅ Order count analytics  \n- ✅ Top selling products \\(top 10\\)\n- ✅ Orders by status breakdown\n- ✅ Beautiful charts with Recharts\n  - Area chart for revenue over time\n  - Bar chart for daily orders\n  - Pie chart for order status distribution\n- ✅ Summary cards with key metrics\n  - Total revenue\n  - Total orders\n  - Average order value\n  - Average daily revenue\n- ✅ Date range selector \\(7/30/60/90 days\\)\n- ✅ Responsive charts\n- ✅ Empty states for no data\n\n#### Analytics API Routes ✅\n- ✅ \\\\`GET /api/admin/analytics/revenue\\\\` - Daily revenue data with summary\n- ✅ \\\\`GET /api/admin/analytics/sales\\\\` - Top products, order status, daily orders\n\n#### Analytics Page ✅\n- ✅ \\\\`/admin/analytics\\\\` - Comprehensive analytics dashboard with charts\n\n\")"
+      "Bash(echo \"\n\n### 10. **Analytics & Reports** ✅ **COMPLETE**\n- ✅ Revenue analytics with date range selection\n- ✅ Daily revenue tracking\n- ✅ Order count analytics  \n- ✅ Top selling products \\(top 10\\)\n- ✅ Orders by status breakdown\n- ✅ Beautiful charts with Recharts\n  - Area chart for revenue over time\n  - Bar chart for daily orders\n  - Pie chart for order status distribution\n- ✅ Summary cards with key metrics\n  - Total revenue\n  - Total orders\n  - Average order value\n  - Average daily revenue\n- ✅ Date range selector \\(7/30/60/90 days\\)\n- ✅ Responsive charts\n- ✅ Empty states for no data\n\n#### Analytics API Routes ✅\n- ✅ \\\\`GET /api/admin/analytics/revenue\\\\` - Daily revenue data with summary\n- ✅ \\\\`GET /api/admin/analytics/sales\\\\` - Top products, order status, daily orders\n\n#### Analytics Page ✅\n- ✅ \\\\`/admin/analytics\\\\` - Comprehensive analytics dashboard with charts\n\n\")",
+      "Bash(powershell -Command:*)"
     ]
   }
 }

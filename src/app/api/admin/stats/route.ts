@@ -136,6 +136,24 @@ export const GET = withAuth(async (req: NextRequest) => {
       createdAt: order.createdAt.toISOString(),
     }));
 
+    // Get low stock products for dashboard alerts (limit to 5)
+    const lowStockProductsList = await db.query.products.findMany({
+      where: and(
+        eq(products.isActive, true),
+        eq(products.trackInventory, true),
+        sql`${products.stockQuantity} <= ${products.lowStockThreshold}`
+      ),
+      orderBy: (products, { asc }) => [asc(products.stockQuantity)],
+      limit: 5,
+      columns: {
+        id: true,
+        name: true,
+        sku: true,
+        stockQuantity: true,
+        lowStockThreshold: true,
+      },
+    });
+
     return NextResponse.json({
       stats: {
         revenue: {
@@ -156,6 +174,7 @@ export const GET = withAuth(async (req: NextRequest) => {
         },
       },
       recentOrders: formattedRecentOrders,
+      lowStockProducts: lowStockProductsList,
     });
 
   } catch (error) {

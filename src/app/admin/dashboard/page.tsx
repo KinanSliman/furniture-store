@@ -2,14 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { 
-  DollarSign, 
-  ShoppingCart, 
-  Package, 
+import {
+  DollarSign,
+  ShoppingCart,
+  Package,
   Users,
   TrendingUp,
   TrendingDown,
-  ArrowRight
+  ArrowRight,
+  AlertTriangle
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -40,9 +41,18 @@ interface RecentOrder {
   createdAt: string;
 }
 
+interface LowStockProduct {
+  id: string;
+  name: string;
+  sku: string | null;
+  stockQuantity: number;
+  lowStockThreshold: number;
+}
+
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [lowStockProducts, setLowStockProducts] = useState<LowStockProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -60,6 +70,7 @@ export default function AdminDashboardPage() {
       const data = await response.json();
       setStats(data.stats);
       setRecentOrders(data.recentOrders);
+      setLowStockProducts(data.lowStockProducts || []);
       setIsLoading(false);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
@@ -239,6 +250,86 @@ export default function AdminDashboardPage() {
           </table>
         </div>
       </div>
+
+      {/* Low Stock Alerts */}
+      {lowStockProducts.length > 0 && (
+        <div className="bg-white rounded-xl border border-orange-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-orange-200 bg-orange-50 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertTriangle size={20} className="text-orange-600" />
+              <h2 className="text-lg font-semibold text-orange-900">Low Stock Alerts</h2>
+              <span className="px-2 py-0.5 bg-orange-200 text-orange-800 text-xs font-semibold rounded-full">
+                {lowStockProducts.length}
+              </span>
+            </div>
+            <Link
+              href="/admin/inventory"
+              className="text-sm font-medium text-orange-600 hover:text-orange-700 flex items-center gap-1"
+            >
+              View All
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50 border-b border-slate-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">
+                    Product
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">
+                    SKU
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">
+                    Stock
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">
+                    Threshold
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-slate-600 uppercase tracking-wider">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200">
+                {lowStockProducts.map((product) => (
+                  <tr key={product.id} className="hover:bg-orange-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <Link
+                        href={`/admin/products/${product.id}`}
+                        className="text-sm font-medium text-slate-900 hover:text-purple-600"
+                      >
+                        {product.name}
+                      </Link>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm text-slate-600">{product.sku || '-'}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`text-sm font-semibold ${
+                        product.stockQuantity === 0 ? 'text-red-600' : 'text-orange-600'
+                      }`}>
+                        {product.stockQuantity === 0 ? 'Out of stock' : `${product.stockQuantity} left`}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm text-slate-600">{product.lowStockThreshold}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <Link
+                        href={`/admin/products/${product.id}`}
+                        className="text-sm font-medium text-purple-600 hover:text-purple-700"
+                      >
+                        Update
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
