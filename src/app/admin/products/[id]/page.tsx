@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Save, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import ImageUpload from '@/components/ImageUpload';
+import VariantManager from '@/components/VariantManager';
 
 interface ImageData {
   id?: string;
@@ -14,6 +15,20 @@ interface ImageData {
   altText?: string;
   isPrimary?: boolean;
   displayOrder?: number;
+}
+
+interface Variant {
+  id?: string;
+  name: string;
+  sku?: string;
+  price?: number;
+  compareAtPrice?: number;
+  costPrice?: number;
+  stockQuantity: number;
+  imageUrl?: string;
+  attributes: { [key: string]: string };
+  isActive: boolean;
+  displayOrder: number;
 }
 
 interface Product {
@@ -52,6 +67,7 @@ export default function EditProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [images, setImages] = useState<ImageData[]>([]);
+  const [variants, setVariants] = useState<Variant[]>([]);
   const [formData, setFormData] = useState<Product>({
     id: '',
     name: '',
@@ -121,6 +137,11 @@ export default function EditProductPage() {
           displayOrder: img.displayOrder || 0,
         })));
       }
+
+      // Load product variants
+      if (data.product.variants && Array.isArray(data.product.variants)) {
+        setVariants(data.product.variants);
+      }
     } catch (error) {
       console.error('Error fetching product:', error);
       toast.error('Failed to load product');
@@ -167,6 +188,28 @@ export default function EditProductPage() {
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to update product');
+      }
+
+      // Sync variants - delete all and recreate (simple approach)
+      // Note: This could be optimized with a diff algorithm in production
+      if (variants.length > 0) {
+        for (const variant of variants) {
+          if (variant.id) {
+            // Update existing variant
+            await fetch(`/api/admin/variants/${variant.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(variant),
+            });
+          } else {
+            // Create new variant
+            await fetch(`/api/admin/products/${productId}/variants`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(variant),
+            });
+          }
+        }
       }
 
       toast.success('Product updated successfully!');
@@ -482,6 +525,16 @@ export default function EditProductPage() {
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Product Variants */}
+            <div className="bg-white rounded-xl border border-slate-200 p-6">
+              <VariantManager
+                productId={productId}
+                variants={variants}
+                onVariantsChange={setVariants}
+                basePrice={formData.price ? parseFloat(formData.price) : undefined}
+              />
             </div>
 
             {/* Shipping */}

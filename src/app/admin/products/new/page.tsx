@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import ImageUpload from '@/components/ImageUpload';
+import VariantManager from '@/components/VariantManager';
 
 interface ImageData {
   id?: string;
@@ -16,10 +17,25 @@ interface ImageData {
   displayOrder?: number;
 }
 
+interface Variant {
+  id?: string;
+  name: string;
+  sku?: string;
+  price?: number;
+  compareAtPrice?: number;
+  costPrice?: number;
+  stockQuantity: number;
+  imageUrl?: string;
+  attributes: { [key: string]: string };
+  isActive: boolean;
+  displayOrder: number;
+}
+
 export default function NewProductPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [images, setImages] = useState<ImageData[]>([]);
+  const [variants, setVariants] = useState<Variant[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -94,6 +110,18 @@ export default function NewProductPage() {
       }
 
       const data = await response.json();
+
+      // Save variants if any
+      if (variants.length > 0) {
+        for (const variant of variants) {
+          await fetch(`/api/admin/products/${data.product.id}/variants`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(variant),
+          });
+        }
+      }
+
       toast.success('Product created successfully!');
       router.push(`/admin/products/${data.product.id}`);
     } catch (error: any) {
@@ -354,6 +382,15 @@ export default function NewProductPage() {
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Product Variants */}
+            <div className="bg-white rounded-xl border border-slate-200 p-6">
+              <VariantManager
+                variants={variants}
+                onVariantsChange={setVariants}
+                basePrice={formData.price ? parseFloat(formData.price) : undefined}
+              />
             </div>
 
             {/* Shipping */}

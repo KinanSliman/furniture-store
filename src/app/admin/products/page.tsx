@@ -278,7 +278,14 @@ export default function ProductsListPage() {
                             >
                               {product.name}
                             </Link>
-                            <p className="text-sm text-slate-500 truncate">{product.slug}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm text-slate-500 truncate">{product.slug}</p>
+                              {product.variants && product.variants.length > 0 && (
+                                <span className="text-xs px-2 py-0.5 bg-purple-100 text-purple-700 rounded">
+                                  {product.variants.length} variant{product.variants.length !== 1 ? 's' : ''}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </td>

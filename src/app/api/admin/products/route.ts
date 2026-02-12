@@ -51,6 +51,7 @@ export const GET = withAuth(async (req: NextRequest) => {
           orderBy: asc(productImages.displayOrder),
           limit: 1,
         },
+        variants: true,
       },
     });
 

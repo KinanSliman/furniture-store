@@ -20,6 +20,9 @@ export const GET = withAuth(async (req: NextRequest, { params }: { params: { id:
             category: true,
           },
         },
+        variants: {
+          orderBy: (variants, { asc }) => [asc(variants.displayOrder), asc(variants.name)],
+        },
       },
     });
 
