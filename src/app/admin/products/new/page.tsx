@@ -5,10 +5,21 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import ImageUpload from '@/components/ImageUpload';
+
+interface ImageData {
+  id?: string;
+  url: string;
+  publicId: string;
+  altText?: string;
+  isPrimary?: boolean;
+  displayOrder?: number;
+}
 
 export default function NewProductPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [images, setImages] = useState<ImageData[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -65,7 +76,16 @@ export default function NewProductPage() {
       const response = await fetch('/api/admin/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          images: images.map((img, index) => ({
+            url: img.url,
+            publicId: img.publicId,
+            altText: img.altText || '',
+            isPrimary: img.isPrimary || false,
+            displayOrder: index,
+          })),
+        }),
       });
 
       if (!response.ok) {
@@ -104,6 +124,12 @@ export default function NewProductPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content - Left Column (2/3) */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Product Images */}
+            <div className="bg-white rounded-xl border border-slate-200 p-6">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4">Product Images</h2>
+              <ImageUpload images={images} onImagesChange={setImages} maxImages={10} />
+            </div>
+
             {/* Basic Information */}
             <div className="bg-white rounded-xl border border-slate-200 p-6">
               <h2 className="text-lg font-semibold text-slate-900 mb-4">Basic Information</h2>

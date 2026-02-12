@@ -5,6 +5,16 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Save, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import ImageUpload from '@/components/ImageUpload';
+
+interface ImageData {
+  id?: string;
+  url: string;
+  publicId: string;
+  altText?: string;
+  isPrimary?: boolean;
+  displayOrder?: number;
+}
 
 interface Product {
   id: string;
@@ -41,6 +51,7 @@ export default function EditProductPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [images, setImages] = useState<ImageData[]>([]);
   const [formData, setFormData] = useState<Product>({
     id: '',
     name: '',
@@ -98,6 +109,18 @@ export default function EditProductPage() {
         metaDescription: data.product.metaDescription || '',
         metaKeywords: data.product.metaKeywords || '',
       });
+
+      // Load product images
+      if (data.product.images && Array.isArray(data.product.images)) {
+        setImages(data.product.images.map((img: any) => ({
+          id: img.id,
+          url: img.url,
+          publicId: img.publicId || '',
+          altText: img.altText || '',
+          isPrimary: img.isPrimary || false,
+          displayOrder: img.displayOrder || 0,
+        })));
+      }
     } catch (error) {
       console.error('Error fetching product:', error);
       toast.error('Failed to load product');
@@ -128,7 +151,17 @@ export default function EditProductPage() {
       const response = await fetch(`/api/admin/products/${productId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          images: images.map((img, index) => ({
+            id: img.id,
+            url: img.url,
+            publicId: img.publicId,
+            altText: img.altText || '',
+            isPrimary: img.isPrimary || false,
+            displayOrder: index,
+          })),
+        }),
       });
 
       if (!response.ok) {
@@ -220,6 +253,12 @@ export default function EditProductPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content - Left Column (2/3) */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Product Images */}
+            <div className="bg-white rounded-xl border border-slate-200 p-6">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4">Product Images</h2>
+              <ImageUpload images={images} onImagesChange={setImages} maxImages={10} />
+            </div>
+
             {/* Basic Information */}
             <div className="bg-white rounded-xl border border-slate-200 p-6">
               <h2 className="text-lg font-semibold text-slate-900 mb-4">Basic Information</h2>

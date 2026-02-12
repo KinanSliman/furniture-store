@@ -202,6 +202,7 @@ export const productImages = pgTable('product_images', {
   id: uuid('id').defaultRandom().primaryKey(),
   productId: uuid('product_id').references(() => products.id, { onDelete: 'cascade' }).notNull(),
   url: varchar('url', { length: 500 }).notNull(),
+  publicId: varchar('public_id', { length: 255 }), // Cloudinary public ID for deletion
   altText: varchar('alt_text', { length: 255 }),
   displayOrder: integer('display_order').default(0).notNull(),
   isPrimary: boolean('is_primary').default(false).notNull(),

@@ -123,6 +123,7 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { i
           body.images.map((img: any, index: number) => ({
             productId: id,
             url: img.url,
+            publicId: img.publicId || null,
             altText: img.altText || body.name || existingProduct.name,
             displayOrder: img.displayOrder ?? index,
             isPrimary: img.isPrimary ?? (index === 0),

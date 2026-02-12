@@ -140,6 +140,7 @@ export const POST = withAuth(async (req: NextRequest) => {
         body.images.map((img: any, index: number) => ({
           productId: newProduct.id,
           url: img.url,
+          publicId: img.publicId || null,
           altText: img.altText || body.name,
           displayOrder: img.displayOrder ?? index,
           isPrimary: img.isPrimary ?? (index === 0),
