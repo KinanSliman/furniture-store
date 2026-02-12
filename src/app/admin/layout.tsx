@@ -15,7 +15,9 @@ import {
   X,
   Tag,
   TrendingUp,
-  Truck
+  Truck,
+  Star,
+  FolderTree
 } from 'lucide-react';
 
 interface User {
@@ -96,8 +98,10 @@ export default function AdminLayout({
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Products', href: '/admin/products', icon: Package },
+    { name: 'Categories', href: '/admin/categories', icon: FolderTree },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { name: 'Customers', href: '/admin/customers', icon: Users },
+    { name: 'Reviews', href: '/admin/reviews', icon: Star },
     { name: 'Discounts', href: '/admin/discounts', icon: Tag },
     { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp },
     { name: 'Shipping', href: '/admin/shipping', icon: Truck },
