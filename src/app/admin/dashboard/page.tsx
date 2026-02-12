@@ -51,37 +51,16 @@ export default function AdminDashboardPage() {
 
   const fetchDashboardData = async () => {
     try {
-      // TODO: Replace with actual API calls
-      // For now, using mock data
-      setTimeout(() => {
-        setStats({
-          revenue: { total: 45231.89, change: 12.5 },
-          orders: { total: 234, change: 8.2 },
-          products: { total: 156, lowStock: 12 },
-          customers: { total: 1243, new: 34 },
-        });
-        
-        setRecentOrders([
-          {
-            id: '1',
-            orderNumber: 'ORD-2024-001',
-            customerName: 'John Doe',
-            total: 129.99,
-            status: 'pending',
-            createdAt: new Date().toISOString(),
-          },
-          {
-            id: '2',
-            orderNumber: 'ORD-2024-002',
-            customerName: 'Jane Smith',
-            total: 249.50,
-            status: 'processing',
-            createdAt: new Date(Date.now() - 3600000).toISOString(),
-          },
-        ]);
-        
-        setIsLoading(false);
-      }, 500);
+      const response = await fetch('/api/admin/stats');
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch dashboard stats');
+      }
+
+      const data = await response.json();
+      setStats(data.stats);
+      setRecentOrders(data.recentOrders);
+      setIsLoading(false);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
       setIsLoading(false);
