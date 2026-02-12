@@ -13,7 +13,8 @@ import {
   EyeOff,
   ChevronLeft,
   ChevronRight,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Download
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -151,13 +152,22 @@ export default function ProductsListPage() {
           <h1 className="text-3xl font-bold text-slate-900">Products</h1>
           <p className="text-slate-600 mt-1">Manage your product catalog</p>
         </div>
-        <Link
-          href="/admin/products/new"
-          className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
-        >
-          <Plus size={20} />
-          Add Product
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href="/admin/bulk-operations"
+            className="flex items-center gap-2 bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+          >
+            <Download size={20} />
+            Import/Export
+          </Link>
+          <Link
+            href="/admin/products/new"
+            className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+          >
+            <Plus size={20} />
+            Add Product
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}

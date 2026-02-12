@@ -18,7 +18,8 @@ import {
   Truck,
   Star,
   FolderTree,
-  PackageSearch
+  PackageSearch,
+  Download
 } from 'lucide-react';
 
 interface User {
@@ -101,6 +102,7 @@ export default function AdminLayout({
     { name: 'Products', href: '/admin/products', icon: Package },
     { name: 'Categories', href: '/admin/categories', icon: FolderTree },
     { name: 'Inventory', href: '/admin/inventory', icon: PackageSearch },
+    { name: 'Bulk Operations', href: '/admin/bulk-operations', icon: Download },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { name: 'Customers', href: '/admin/customers', icon: Users },
     { name: 'Reviews', href: '/admin/reviews', icon: Star },
