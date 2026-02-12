@@ -3,12 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  Settings, 
+import { Toaster } from 'sonner';
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  Settings,
   LogOut,
   Menu,
   X,
@@ -36,9 +37,18 @@ export default function AdminLayout({
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Skip auth check for login page
+  const isLoginPage = pathname === '/admin/login';
+
   useEffect(() => {
+    // Don't check auth on login page
+    if (isLoginPage) {
+      setIsLoading(false);
+      return;
+    }
+    
     checkAuth();
-  }, []);
+  }, [isLoginPage]);
 
   const checkAuth = async () => {
     try {
@@ -66,6 +76,12 @@ export default function AdminLayout({
     }
   };
 
+  // Show login page without sidebar/header
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  // Show loading for protected pages
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -89,14 +105,16 @@ export default function AdminLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Mobile sidebar backdrop */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
+    <>
+      <Toaster position="top-right" richColors closeButton />
+      <div className="min-h-screen bg-slate-50">
+        {/* Mobile sidebar backdrop */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
 
       {/* Sidebar */}
       <aside 
@@ -205,5 +223,6 @@ export default function AdminLayout({
         </main>
       </div>
     </div>
+    </>
   );
 }

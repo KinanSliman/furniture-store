@@ -28,13 +28,16 @@ export async function POST(req: NextRequest) {
 
     // Connect to database (same method that works for seed)
     const url = new URL(process.env.DATABASE_URL!);
+    //const pool = new Pool({
+    //  host: url.hostname,
+     // port: parseInt(url.port),
+     // database: url.pathname.slice(1),
+    //  user: url.username,
+     // password: url.password,
+    //});
     const pool = new Pool({
-      host: url.hostname,
-      port: parseInt(url.port),
-      database: url.pathname.slice(1),
-      user: url.username,
-      password: url.password,
-    });
+    connectionString: 'postgresql://postgres:kinan@localhost:5432/ecommerce',
+  });
     const db = drizzle(pool);
 
     // Find user
