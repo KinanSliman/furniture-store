@@ -1,0 +1,471 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "create": "Create",
+      "update": "Update",
+      "export": "Export",
+      "import": "Import",
+      "search": "Search",
+      "filter": "Filter",
+      "clear": "Clear",
+      "apply": "Apply",
+      "back": "Back",
+      "next": "Next",
+      "previous": "Previous",
+      "submit": "Submit",
+      "close": "Close",
+      "confirm": "Confirm"
+    },
+    "actions": {
+      "add": "Add",
+      "remove": "Remove",
+      "upload": "Upload",
+      "download": "Download",
+      "view": "View",
+      "preview": "Preview",
+      "duplicate": "Duplicate"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "noData": "No data found",
+      "error": "An error occurred",
+      "success": "Success",
+      "confirmDelete": "Are you sure you want to delete this item?",
+      "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?",
+      "required": "This field is required",
+      "invalidEmail": "Invalid email address",
+      "invalidURL": "Invalid URL"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "results": "results",
+      "page": "Page",
+      "perPage": "Per page",
+      "goToPage": "Go to page"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "draft": "Draft",
+      "published": "Published"
+    }
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "orders": "Orders",
+    "categories": "Categories",
+    "customers": "Customers",
+    "analytics": "Analytics",
+    "discounts": "Discounts",
+    "reviews": "Reviews",
+    "inventory": "Inventory",
+    "bulkOperations": "Bulk Operations",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Sign in",
+    "loggingIn": "Signing in...",
+    "invalidCredentials": "Invalid email or password",
+    "welcomeBack": "Welcome back",
+    "adminPanel": "Admin Panel"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "overview": "Overview",
+    "stats": {
+      "revenue": "Revenue",
+      "orders": "Orders",
+      "products": "Products",
+      "customers": "Customers",
+      "thisMonth": "This month",
+      "lastMonth": "vs last month",
+      "total": "Total"
+    },
+    "recentOrders": "Recent Orders",
+    "quickActions": "Quick Actions",
+    "lowStock": "Low Stock Alert",
+    "newCustomers": "New Customers"
+  },
+  "products": {
+    "title": "Products",
+    "addProduct": "Add Product",
+    "editProduct": "Edit Product",
+    "deleteProduct": "Delete Product",
+    "productDetails": "Product Details",
+    "searchPlaceholder": "Search by name or SKU...",
+    "table": {
+      "image": "Image",
+      "name": "Name",
+      "sku": "SKU",
+      "price": "Price",
+      "stock": "Stock",
+      "status": "Status",
+      "actions": "Actions",
+      "category": "Category",
+      "variants": "Variants"
+    },
+    "form": {
+      "basicInfo": "Basic Information",
+      "nameEn": "Product Name (English)",
+      "nameAr": "Product Name (Arabic)",
+      "descriptionEn": "Description (English)",
+      "descriptionAr": "Description (Arabic)",
+      "shortDescriptionEn": "Short Description (English)",
+      "shortDescriptionAr": "Short Description (Arabic)",
+      "sku": "SKU",
+      "barcode": "Barcode",
+      "slug": "Slug",
+      "pricing": "Pricing",
+      "price": "Price",
+      "compareAtPrice": "Compare at Price",
+      "costPrice": "Cost Price",
+      "inventory": "Inventory",
+      "stockQuantity": "Stock Quantity",
+      "lowStockThreshold": "Low Stock Threshold",
+      "trackInventory": "Track inventory",
+      "allowBackorder": "Allow backorder",
+      "shipping": "Shipping",
+      "weight": "Weight",
+      "dimensions": "Dimensions",
+      "length": "Length",
+      "width": "Width",
+      "height": "Height",
+      "requiresShipping": "Requires shipping",
+      "seo": "SEO",
+      "metaTitleEn": "Meta Title (English)",
+      "metaTitleAr": "Meta Title (Arabic)",
+      "metaDescriptionEn": "Meta Description (English)",
+      "metaDescriptionAr": "Meta Description (Arabic)",
+      "metaKeywords": "Meta Keywords",
+      "images": "Images",
+      "variants": "Variants",
+      "featured": "Featured product"
+    },
+    "filters": {
+      "allStatus": "All Status",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "sort": {
+      "newest": "Newest First",
+      "oldest": "Oldest First",
+      "nameAsc": "Name (A-Z)",
+      "nameDesc": "Name (Z-A)",
+      "priceLow": "Price (Low to High)",
+      "priceHigh": "Price (High to Low)",
+      "stockLow": "Stock (Low to High)",
+      "stockHigh": "Stock (High to Low)"
+    },
+    "messages": {
+      "createSuccess": "Product created successfully",
+      "updateSuccess": "Product updated successfully",
+      "deleteSuccess": "Product deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this product?",
+      "noProducts": "No products found",
+      "loadError": "Failed to load products"
+    }
+  },
+  "orders": {
+    "title": "Orders",
+    "orderDetails": "Order Details",
+    "orderNumber": "Order Number",
+    "table": {
+      "orderNumber": "Order #",
+      "customer": "Customer",
+      "date": "Date",
+      "total": "Total",
+      "status": "Status",
+      "paymentStatus": "Payment",
+      "actions": "Actions"
+    },
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    },
+    "paymentStatus": {
+      "pending": "Pending",
+      "paid": "Paid",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "filters": {
+      "allOrders": "All Orders",
+      "allPayment": "All Payment Status"
+    },
+    "details": {
+      "customer": "Customer Information",
+      "shipping": "Shipping Address",
+      "billing": "Billing Address",
+      "items": "Order Items",
+      "summary": "Order Summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "discount": "Discount",
+      "total": "Total",
+      "statusHistory": "Status History",
+      "updateStatus": "Update Status",
+      "addNote": "Add Note"
+    },
+    "messages": {
+      "updateSuccess": "Order updated successfully",
+      "statusUpdateSuccess": "Order status updated",
+      "noOrders": "No orders found"
+    }
+  },
+  "customers": {
+    "title": "Customers",
+    "customerDetails": "Customer Details",
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "orders": "Orders",
+      "spent": "Total Spent",
+      "joinDate": "Join Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "details": {
+      "contactInfo": "Contact Information",
+      "stats": "Statistics",
+      "totalOrders": "Total Orders",
+      "totalSpent": "Total Spent",
+      "avgOrderValue": "Avg Order Value",
+      "orderHistory": "Order History",
+      "lastLogin": "Last Login",
+      "emailVerified": "Email Verified",
+      "phoneVerified": "Phone Verified"
+    },
+    "filters": {
+      "allCustomers": "All Customers",
+      "active": "Active",
+      "inactive": "Inactive",
+      "verified": "Verified",
+      "unverified": "Unverified"
+    },
+    "messages": {
+      "updateSuccess": "Customer updated successfully",
+      "noCustomers": "No customers found"
+    }
+  },
+  "categories": {
+    "title": "Categories",
+    "addCategory": "Add Category",
+    "editCategory": "Edit Category",
+    "deleteCategory": "Delete Category",
+    "table": {
+      "name": "Name",
+      "slug": "Slug",
+      "parent": "Parent Category",
+      "products": "Products",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "form": {
+      "nameEn": "Category Name (English)",
+      "nameAr": "Category Name (Arabic)",
+      "descriptionEn": "Description (English)",
+      "descriptionAr": "Description (Arabic)",
+      "slug": "Slug",
+      "parent": "Parent Category",
+      "displayOrder": "Display Order",
+      "metaTitleEn": "Meta Title (English)",
+      "metaTitleAr": "Meta Title (Arabic)",
+      "metaDescriptionEn": "Meta Description (English)",
+      "metaDescriptionAr": "Meta Description (Arabic)"
+    },
+    "messages": {
+      "createSuccess": "Category created successfully",
+      "updateSuccess": "Category updated successfully",
+      "deleteSuccess": "Category deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this category?",
+      "noCategories": "No categories found"
+    }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "revenue": "Revenue Analytics",
+    "sales": "Sales Analytics",
+    "dateRange": "Date Range",
+    "last7Days": "Last 7 Days",
+    "last30Days": "Last 30 Days",
+    "last60Days": "Last 60 Days",
+    "last90Days": "Last 90 Days",
+    "totalRevenue": "Total Revenue",
+    "avgOrderValue": "Avg Order Value",
+    "topProducts": "Top Selling Products",
+    "orderStatus": "Order Status Distribution",
+    "revenueOverTime": "Revenue Over Time",
+    "dailyOrders": "Daily Orders"
+  },
+  "discounts": {
+    "title": "Discounts",
+    "addDiscount": "Add Discount",
+    "editDiscount": "Edit Discount",
+    "table": {
+      "code": "Code",
+      "type": "Type",
+      "value": "Value",
+      "usage": "Usage",
+      "validFrom": "Valid From",
+      "validUntil": "Valid Until",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "type": {
+      "percentage": "Percentage",
+      "fixedAmount": "Fixed Amount",
+      "freeShipping": "Free Shipping"
+    },
+    "form": {
+      "code": "Discount Code",
+      "type": "Discount Type",
+      "value": "Value",
+      "minPurchase": "Minimum Purchase",
+      "maxUses": "Max Uses",
+      "maxUsesPerCustomer": "Max Uses Per Customer",
+      "validFrom": "Valid From",
+      "validUntil": "Valid Until",
+      "firstTimeOnly": "First-time customers only"
+    },
+    "messages": {
+      "createSuccess": "Discount created successfully",
+      "updateSuccess": "Discount updated successfully",
+      "deleteSuccess": "Discount deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete this discount?",
+      "expired": "Expired",
+      "limitReached": "Limit reached"
+    }
+  },
+  "reviews": {
+    "title": "Reviews",
+    "table": {
+      "product": "Product",
+      "customer": "Customer",
+      "rating": "Rating",
+      "comment": "Comment",
+      "date": "Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "filters": {
+      "allReviews": "All Reviews",
+      "allRatings": "All Ratings",
+      "verified": "Verified Purchases",
+      "unverified": "Unverified"
+    },
+    "messages": {
+      "approveSuccess": "Review approved",
+      "rejectSuccess": "Review rejected",
+      "deleteSuccess": "Review deleted",
+      "deleteConfirm": "Are you sure you want to delete this review?"
+    }
+  },
+  "inventory": {
+    "title": "Inventory",
+    "alerts": "Stock Alerts",
+    "outOfStock": "Out of Stock",
+    "lowStock": "Low Stock",
+    "table": {
+      "product": "Product",
+      "sku": "SKU",
+      "stock": "Stock",
+      "threshold": "Threshold",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "messages": {
+      "updateSuccess": "Inventory updated successfully",
+      "outOfStockAlert": "{count} products are out of stock",
+      "lowStockAlert": "{count} products have low stock"
+    }
+  },
+  "bulkOperations": {
+    "title": "Bulk Operations",
+    "importProducts": "Import Products",
+    "exportProducts": "Export Products",
+    "downloadTemplate": "Download CSV Template",
+    "uploadFile": "Upload CSV File",
+    "importInstructions": "Import Instructions",
+    "exportInstructions": "Export Instructions",
+    "results": {
+      "created": "Created",
+      "updated": "Updated",
+      "failed": "Failed",
+      "total": "Total"
+    },
+    "messages": {
+      "importSuccess": "Import completed successfully",
+      "exportSuccess": "Export completed successfully",
+      "selectFile": "Please select a CSV file",
+      "invalidFile": "Invalid file format. Please upload a CSV file."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "store": "Store",
+      "regional": "Regional",
+      "tax": "Tax",
+      "email": "Email"
+    },
+    "store": {
+      "storeName": "Store Name",
+      "storeEmail": "Store Email",
+      "storePhone": "Store Phone",
+      "address": "Address",
+      "city": "City",
+      "state": "State / Province",
+      "postalCode": "Postal Code",
+      "country": "Country"
+    },
+    "regional": {
+      "currency": "Currency",
+      "currencySymbol": "Currency Symbol",
+      "timezone": "Timezone",
+      "weightUnit": "Weight Unit",
+      "dimensionUnit": "Dimension Unit"
+    },
+    "tax": {
+      "defaultTaxRate": "Default Tax Rate",
+      "taxInclusive": "Prices include tax",
+      "displayWithTax": "Display prices with tax"
+    },
+    "email": {
+      "fromName": "From Name",
+      "fromEmail": "From Email",
+      "replyToEmail": "Reply-To Email"
+    },
+    "messages": {
+      "saveSuccess": "Settings saved successfully",
+      "saveError": "Failed to save settings"
+    }
+  }
+}

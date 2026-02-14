@@ -1,0 +1,471 @@
+{
+  "common": {
+    "buttons": {
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "delete": "حذف",
+      "edit": "تعديل",
+      "create": "إنشاء",
+      "update": "تحديث",
+      "export": "تصدير",
+      "import": "استيراد",
+      "search": "بحث",
+      "filter": "تصفية",
+      "clear": "مسح",
+      "apply": "تطبيق",
+      "back": "رجوع",
+      "next": "التالي",
+      "previous": "السابق",
+      "submit": "إرسال",
+      "close": "إغلاق",
+      "confirm": "تأكيد"
+    },
+    "actions": {
+      "add": "إضافة",
+      "remove": "إزالة",
+      "upload": "رفع",
+      "download": "تحميل",
+      "view": "عرض",
+      "preview": "معاينة",
+      "duplicate": "نسخ"
+    },
+    "messages": {
+      "loading": "جاري التحميل...",
+      "noData": "لا توجد بيانات",
+      "error": "حدث خطأ",
+      "success": "نجح",
+      "confirmDelete": "هل أنت متأكد من حذف هذا العنصر؟",
+      "unsavedChanges": "لديك تغييرات غير محفوظة. هل أنت متأكد من المغادرة؟",
+      "required": "هذا الحقل مطلوب",
+      "invalidEmail": "عنوان بريد إلكتروني غير صالح",
+      "invalidURL": "عنوان URL غير صالح"
+    },
+    "pagination": {
+      "showing": "عرض",
+      "of": "من",
+      "results": "نتائج",
+      "page": "صفحة",
+      "perPage": "لكل صفحة",
+      "goToPage": "الانتقال إلى الصفحة"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "pending": "قيد الانتظار",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض",
+      "draft": "مسودة",
+      "published": "منشور"
+    }
+  },
+  "navigation": {
+    "dashboard": "لوحة التحكم",
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "categories": "الفئات",
+    "customers": "العملاء",
+    "analytics": "التحليلات",
+    "discounts": "الخصومات",
+    "reviews": "المراجعات",
+    "inventory": "المخزون",
+    "bulkOperations": "العمليات الجماعية",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "rememberMe": "تذكرني",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "loginButton": "تسجيل الدخول",
+    "loggingIn": "جاري تسجيل الدخول...",
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "welcomeBack": "مرحباً بعودتك",
+    "adminPanel": "لوحة الإدارة"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "welcome": "مرحباً بعودتك",
+    "overview": "نظرة عامة",
+    "stats": {
+      "revenue": "الإيرادات",
+      "orders": "الطلبات",
+      "products": "المنتجات",
+      "customers": "العملاء",
+      "thisMonth": "هذا الشهر",
+      "lastMonth": "مقارنة بالشهر الماضي",
+      "total": "الإجمالي"
+    },
+    "recentOrders": "الطلبات الأخيرة",
+    "quickActions": "إجراءات سريعة",
+    "lowStock": "تنبيه انخفاض المخزون",
+    "newCustomers": "عملاء جدد"
+  },
+  "products": {
+    "title": "المنتجات",
+    "addProduct": "إضافة منتج",
+    "editProduct": "تعديل المنتج",
+    "deleteProduct": "حذف المنتج",
+    "productDetails": "تفاصيل المنتج",
+    "searchPlaceholder": "البحث بالاسم أو رمز المنتج...",
+    "table": {
+      "image": "الصورة",
+      "name": "الاسم",
+      "sku": "رمز المنتج",
+      "price": "السعر",
+      "stock": "المخزون",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "category": "الفئة",
+      "variants": "المتغيرات"
+    },
+    "form": {
+      "basicInfo": "المعلومات الأساسية",
+      "nameEn": "اسم المنتج (إنجليزي)",
+      "nameAr": "اسم المنتج (عربي)",
+      "descriptionEn": "الوصف (إنجليزي)",
+      "descriptionAr": "الوصف (عربي)",
+      "shortDescriptionEn": "وصف مختصر (إنجليزي)",
+      "shortDescriptionAr": "وصف مختصر (عربي)",
+      "sku": "رمز المنتج",
+      "barcode": "الباركود",
+      "slug": "الرابط",
+      "pricing": "التسعير",
+      "price": "السعر",
+      "compareAtPrice": "قارن بالسعر",
+      "costPrice": "سعر التكلفة",
+      "inventory": "المخزون",
+      "stockQuantity": "كمية المخزون",
+      "lowStockThreshold": "حد انخفاض المخزون",
+      "trackInventory": "تتبع المخزون",
+      "allowBackorder": "السماح بالطلب المسبق",
+      "shipping": "الشحن",
+      "weight": "الوزن",
+      "dimensions": "الأبعاد",
+      "length": "الطول",
+      "width": "العرض",
+      "height": "الارتفاع",
+      "requiresShipping": "يتطلب الشحن",
+      "seo": "تحسين محركات البحث",
+      "metaTitleEn": "عنوان ميتا (إنجليزي)",
+      "metaTitleAr": "عنوان ميتا (عربي)",
+      "metaDescriptionEn": "وصف ميتا (إنجليزي)",
+      "metaDescriptionAr": "وصف ميتا (عربي)",
+      "metaKeywords": "كلمات مفتاحية",
+      "images": "الصور",
+      "variants": "المتغيرات",
+      "featured": "منتج مميز"
+    },
+    "filters": {
+      "allStatus": "جميع الحالات",
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "sort": {
+      "newest": "الأحدث أولاً",
+      "oldest": "الأقدم أولاً",
+      "nameAsc": "الاسم (أ-ي)",
+      "nameDesc": "الاسم (ي-أ)",
+      "priceLow": "السعر (من الأقل إلى الأعلى)",
+      "priceHigh": "السعر (من الأعلى إلى الأقل)",
+      "stockLow": "المخزون (من الأقل إلى الأعلى)",
+      "stockHigh": "المخزون (من الأعلى إلى الأقل)"
+    },
+    "messages": {
+      "createSuccess": "تم إنشاء المنتج بنجاح",
+      "updateSuccess": "تم تحديث المنتج بنجاح",
+      "deleteSuccess": "تم حذف المنتج بنجاح",
+      "deleteConfirm": "هل أنت متأكد من حذف هذا المنتج؟",
+      "noProducts": "لا توجد منتجات",
+      "loadError": "فشل تحميل المنتجات"
+    }
+  },
+  "orders": {
+    "title": "الطلبات",
+    "orderDetails": "تفاصيل الطلب",
+    "orderNumber": "رقم الطلب",
+    "table": {
+      "orderNumber": "رقم الطلب",
+      "customer": "العميل",
+      "date": "التاريخ",
+      "total": "الإجمالي",
+      "status": "الحالة",
+      "paymentStatus": "حالة الدفع",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكد",
+      "processing": "قيد المعالجة",
+      "shipped": "تم الشحن",
+      "delivered": "تم التسليم",
+      "cancelled": "ملغي",
+      "refunded": "مسترد"
+    },
+    "paymentStatus": {
+      "pending": "قيد الانتظار",
+      "paid": "مدفوع",
+      "failed": "فشل",
+      "refunded": "مسترد"
+    },
+    "filters": {
+      "allOrders": "جميع الطلبات",
+      "allPayment": "جميع حالات الدفع"
+    },
+    "details": {
+      "customer": "معلومات العميل",
+      "shipping": "عنوان الشحن",
+      "billing": "عنوان الفاتورة",
+      "items": "عناصر الطلب",
+      "summary": "ملخص الطلب",
+      "subtotal": "المجموع الفرعي",
+      "shipping": "الشحن",
+      "tax": "الضريبة",
+      "discount": "الخصم",
+      "total": "الإجمالي",
+      "statusHistory": "سجل الحالة",
+      "updateStatus": "تحديث الحالة",
+      "addNote": "إضافة ملاحظة"
+    },
+    "messages": {
+      "updateSuccess": "تم تحديث الطلب بنجاح",
+      "statusUpdateSuccess": "تم تحديث حالة الطلب",
+      "noOrders": "لا توجد طلبات"
+    }
+  },
+  "customers": {
+    "title": "العملاء",
+    "customerDetails": "تفاصيل العميل",
+    "table": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "orders": "الطلبات",
+      "spent": "إجمالي الإنفاق",
+      "joinDate": "تاريخ الانضمام",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "details": {
+      "contactInfo": "معلومات الاتصال",
+      "stats": "الإحصائيات",
+      "totalOrders": "إجمالي الطلبات",
+      "totalSpent": "إجمالي الإنفاق",
+      "avgOrderValue": "متوسط قيمة الطلب",
+      "orderHistory": "سجل الطلبات",
+      "lastLogin": "آخر تسجيل دخول",
+      "emailVerified": "البريد الإلكتروني موثق",
+      "phoneVerified": "الهاتف موثق"
+    },
+    "filters": {
+      "allCustomers": "جميع العملاء",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "verified": "موثق",
+      "unverified": "غير موثق"
+    },
+    "messages": {
+      "updateSuccess": "تم تحديث العميل بنجاح",
+      "noCustomers": "لا يوجد عملاء"
+    }
+  },
+  "categories": {
+    "title": "الفئات",
+    "addCategory": "إضافة فئة",
+    "editCategory": "تعديل الفئة",
+    "deleteCategory": "حذف الفئة",
+    "table": {
+      "name": "الاسم",
+      "slug": "الرابط",
+      "parent": "الفئة الأم",
+      "products": "المنتجات",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "form": {
+      "nameEn": "اسم الفئة (إنجليزي)",
+      "nameAr": "اسم الفئة (عربي)",
+      "descriptionEn": "الوصف (إنجليزي)",
+      "descriptionAr": "الوصف (عربي)",
+      "slug": "الرابط",
+      "parent": "الفئة الأم",
+      "displayOrder": "ترتيب العرض",
+      "metaTitleEn": "عنوان ميتا (إنجليزي)",
+      "metaTitleAr": "عنوان ميتا (عربي)",
+      "metaDescriptionEn": "وصف ميتا (إنجليزي)",
+      "metaDescriptionAr": "وصف ميتا (عربي)"
+    },
+    "messages": {
+      "createSuccess": "تم إنشاء الفئة بنجاح",
+      "updateSuccess": "تم تحديث الفئة بنجاح",
+      "deleteSuccess": "تم حذف الفئة بنجاح",
+      "deleteConfirm": "هل أنت متأكد من حذف هذه الفئة؟",
+      "noCategories": "لا توجد فئات"
+    }
+  },
+  "analytics": {
+    "title": "التحليلات",
+    "revenue": "تحليلات الإيرادات",
+    "sales": "تحليلات المبيعات",
+    "dateRange": "نطاق التاريخ",
+    "last7Days": "آخر 7 أيام",
+    "last30Days": "آخر 30 يوماً",
+    "last60Days": "آخر 60 يوماً",
+    "last90Days": "آخر 90 يوماً",
+    "totalRevenue": "إجمالي الإيرادات",
+    "avgOrderValue": "متوسط قيمة الطلب",
+    "topProducts": "المنتجات الأكثر مبيعاً",
+    "orderStatus": "توزيع حالة الطلبات",
+    "revenueOverTime": "الإيرادات بمرور الوقت",
+    "dailyOrders": "الطلبات اليومية"
+  },
+  "discounts": {
+    "title": "الخصومات",
+    "addDiscount": "إضافة خصم",
+    "editDiscount": "تعديل الخصم",
+    "table": {
+      "code": "الرمز",
+      "type": "النوع",
+      "value": "القيمة",
+      "usage": "الاستخدام",
+      "validFrom": "صالح من",
+      "validUntil": "صالح حتى",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "type": {
+      "percentage": "نسبة مئوية",
+      "fixedAmount": "مبلغ ثابت",
+      "freeShipping": "شحن مجاني"
+    },
+    "form": {
+      "code": "رمز الخصم",
+      "type": "نوع الخصم",
+      "value": "القيمة",
+      "minPurchase": "الحد الأدنى للشراء",
+      "maxUses": "الحد الأقصى للاستخدام",
+      "maxUsesPerCustomer": "الحد الأقصى للاستخدام لكل عميل",
+      "validFrom": "صالح من",
+      "validUntil": "صالح حتى",
+      "firstTimeOnly": "للعملاء الجدد فقط"
+    },
+    "messages": {
+      "createSuccess": "تم إنشاء الخصم بنجاح",
+      "updateSuccess": "تم تحديث الخصم بنجاح",
+      "deleteSuccess": "تم حذف الخصم بنجاح",
+      "deleteConfirm": "هل أنت متأكد من حذف هذا الخصم؟",
+      "expired": "منتهي الصلاحية",
+      "limitReached": "تم الوصول إلى الحد الأقصى"
+    }
+  },
+  "reviews": {
+    "title": "المراجعات",
+    "table": {
+      "product": "المنتج",
+      "customer": "العميل",
+      "rating": "التقييم",
+      "comment": "التعليق",
+      "date": "التاريخ",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض"
+    },
+    "filters": {
+      "allReviews": "جميع المراجعات",
+      "allRatings": "جميع التقييمات",
+      "verified": "مشتريات موثقة",
+      "unverified": "غير موثقة"
+    },
+    "messages": {
+      "approveSuccess": "تمت الموافقة على المراجعة",
+      "rejectSuccess": "تم رفض المراجعة",
+      "deleteSuccess": "تم حذف المراجعة",
+      "deleteConfirm": "هل أنت متأكد من حذف هذه المراجعة؟"
+    }
+  },
+  "inventory": {
+    "title": "المخزون",
+    "alerts": "تنبيهات المخزون",
+    "outOfStock": "نفذ من المخزون",
+    "lowStock": "مخزون منخفض",
+    "table": {
+      "product": "المنتج",
+      "sku": "رمز المنتج",
+      "stock": "المخزون",
+      "threshold": "الحد الأدنى",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "messages": {
+      "updateSuccess": "تم تحديث المخزون بنجاح",
+      "outOfStockAlert": "{count} منتج نفذ من المخزون",
+      "lowStockAlert": "{count} منتج لديه مخزون منخفض"
+    }
+  },
+  "bulkOperations": {
+    "title": "العمليات الجماعية",
+    "importProducts": "استيراد المنتجات",
+    "exportProducts": "تصدير المنتجات",
+    "downloadTemplate": "تحميل قالب CSV",
+    "uploadFile": "رفع ملف CSV",
+    "importInstructions": "تعليمات الاستيراد",
+    "exportInstructions": "تعليمات التصدير",
+    "results": {
+      "created": "تم الإنشاء",
+      "updated": "تم التحديث",
+      "failed": "فشل",
+      "total": "الإجمالي"
+    },
+    "messages": {
+      "importSuccess": "تم الاستيراد بنجاح",
+      "exportSuccess": "تم التصدير بنجاح",
+      "selectFile": "الرجاء اختيار ملف CSV",
+      "invalidFile": "تنسيق ملف غير صالح. الرجاء رفع ملف CSV."
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "tabs": {
+      "store": "المتجر",
+      "regional": "الإقليمي",
+      "tax": "الضريبة",
+      "email": "البريد الإلكتروني"
+    },
+    "store": {
+      "storeName": "اسم المتجر",
+      "storeEmail": "بريد المتجر الإلكتروني",
+      "storePhone": "هاتف المتجر",
+      "address": "العنوان",
+      "city": "المدينة",
+      "state": "الولاية / المحافظة",
+      "postalCode": "الرمز البريدي",
+      "country": "البلد"
+    },
+    "regional": {
+      "currency": "العملة",
+      "currencySymbol": "رمز العملة",
+      "timezone": "المنطقة الزمنية",
+      "weightUnit": "وحدة الوزن",
+      "dimensionUnit": "وحدة الأبعاد"
+    },
+    "tax": {
+      "defaultTaxRate": "معدل الضريبة الافتراضي",
+      "taxInclusive": "الأسعار تشمل الضريبة",
+      "displayWithTax": "عرض الأسعار مع الضريبة"
+    },
+    "email": {
+      "fromName": "الاسم المرسل",
+      "fromEmail": "البريد الإلكتروني المرسل",
+      "replyToEmail": "البريد الإلكتروني للرد"
+    },
+    "messages": {
+      "saveSuccess": "تم حفظ الإعدادات بنجاح",
+      "saveError": "فشل حفظ الإعدادات"
+    }
+  }
+}
