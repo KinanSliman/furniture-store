@@ -1,7 +1,23 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+// Validate JWT_SECRET exists and is strong enough
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error(
+    'JWT_SECRET environment variable is required. ' +
+    'Generate a secure secret with: openssl rand -base64 32'
+  );
+}
+
+// Warn if JWT_SECRET is weak (less than 32 characters)
+if (JWT_SECRET.length < 32) {
+  console.warn(
+    '⚠️  WARNING: JWT_SECRET is weak (less than 32 characters). ' +
+    'Generate a stronger secret with: openssl rand -base64 32'
+  );
+}
+
 const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS || '10');
 
 // Password hashing
