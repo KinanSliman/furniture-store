@@ -4,14 +4,30 @@ import { products } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 import { generateSlug } from '@/lib/utils';
+import {
+  sanitizeCSVCell,
+  validateCSVRow,
+  sanitizeProductData,
+  detectSQLInjection,
+  detectXSS
+} from '@/lib/sanitize';
+import { auditLog } from '@/lib/audit-log';
 
 // POST - Import products from CSV
-export const POST = withAuth(async (req: NextRequest) => {
+export const POST = withAuth(async (req: NextRequest, context) => {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File;
 
     if (!file) {
+      await auditLog(req, {
+        userId: context.userId,
+        action: 'import_products',
+        resource: 'products',
+        status: 'failed',
+        errorMessage: 'No file provided',
+      });
+
       return NextResponse.json(
         { error: 'No file provided' },
         { status: 400 }
@@ -19,8 +35,33 @@ export const POST = withAuth(async (req: NextRequest) => {
     }
 
     if (!file.name.endsWith('.csv')) {
+      await auditLog(req, {
+        userId: context.userId,
+        action: 'import_products',
+        resource: 'products',
+        status: 'failed',
+        errorMessage: 'Invalid file type (must be CSV)',
+      });
+
       return NextResponse.json(
         { error: 'File must be a CSV' },
+        { status: 400 }
+      );
+    }
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      await auditLog(req, {
+        userId: context.userId,
+        action: 'import_products',
+        resource: 'products',
+        status: 'failed',
+        errorMessage: 'File too large (max 10MB)',
+      });
+
+      return NextResponse.json(
+        { error: 'File too large (maximum 10MB)' },
         { status: 400 }
       );
     }
@@ -36,8 +77,11 @@ export const POST = withAuth(async (req: NextRequest) => {
       );
     }
 
-    // Parse CSV
-    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    // Parse CSV headers and sanitize them
+    const headers = lines[0]
+      .split(',')
+      .map(h => sanitizeCSVCell(h.replace(/^"|"$/g, '')));
+
     const rows = lines.slice(1);
 
     const results = {
@@ -45,6 +89,7 @@ export const POST = withAuth(async (req: NextRequest) => {
       updated: 0,
       failed: 0,
       errors: [] as string[],
+      securityWarnings: [] as string[],
     };
 
     // Process each row
@@ -61,13 +106,21 @@ export const POST = withAuth(async (req: NextRequest) => {
           if (char === '"') {
             inQuotes = !inQuotes;
           } else if (char === ',' && !inQuotes) {
-            values.push(currentValue.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
+            // Sanitize each CSV cell to prevent CSV injection
+            const sanitizedValue = sanitizeCSVCell(
+              currentValue.trim().replace(/^"|"$/g, '').replace(/""/g, '"')
+            );
+            values.push(sanitizedValue);
             currentValue = '';
           } else {
             currentValue += char;
           }
         }
-        values.push(currentValue.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
+        // Sanitize the last value
+        const sanitizedValue = sanitizeCSVCell(
+          currentValue.trim().replace(/^"|"$/g, '').replace(/""/g, '"')
+        );
+        values.push(sanitizedValue);
 
         // Map values to object
         const rowData: any = {};
@@ -75,15 +128,37 @@ export const POST = withAuth(async (req: NextRequest) => {
           rowData[header] = values[index] || null;
         });
 
+        // Detect injection attacks before validation
+        const rowNumber = i + 2;
+        let securityIssueDetected = false;
+
+        if (detectSQLInjection(rowData['Name'])) {
+          results.securityWarnings.push(`Row ${rowNumber}: Potential SQL injection in Name field - row rejected`);
+          results.errors.push(`Row ${rowNumber}: Security violation detected`);
+          results.failed++;
+          securityIssueDetected = true;
+        }
+
+        if (detectXSS(rowData['Name']) || detectXSS(rowData['Description'])) {
+          results.securityWarnings.push(`Row ${rowNumber}: Potential XSS attack detected - row rejected`);
+          results.errors.push(`Row ${rowNumber}: Security violation detected`);
+          results.failed++;
+          securityIssueDetected = true;
+        }
+
+        if (securityIssueDetected) {
+          continue;
+        }
+
         // Validate required fields
         if (!rowData['Name']) {
-          results.errors.push(`Row ${i + 2}: Name is required`);
+          results.errors.push(`Row ${rowNumber}: Name is required`);
           results.failed++;
           continue;
         }
 
         if (!rowData['Price']) {
-          results.errors.push(`Row ${i + 2}: Price is required`);
+          results.errors.push(`Row ${rowNumber}: Price is required`);
           results.failed++;
           continue;
         }
@@ -100,31 +175,47 @@ export const POST = withAuth(async (req: NextRequest) => {
           });
         }
 
-        // Prepare product data
-        const productData: any = {
+        // Sanitize and prepare product data
+        const rawProductData = {
           name: rowData['Name'],
-          slug: rowData['Slug'] || generateSlug(rowData['Name']),
-          description: rowData['Description'] || null,
-          shortDescription: rowData['Short Description'] || null,
-          price: parseFloat(rowData['Price']) || 0,
-          compareAtPrice: rowData['Compare At Price'] ? parseFloat(rowData['Compare At Price']) : null,
-          costPrice: rowData['Cost Price'] ? parseFloat(rowData['Cost Price']) : null,
-          sku: rowData['SKU'] || null,
-          barcode: rowData['Barcode'] || null,
-          stockQuantity: parseInt(rowData['Stock Quantity']) || 0,
-          lowStockThreshold: parseInt(rowData['Low Stock Threshold']) || 5,
-          trackInventory: rowData['Track Inventory'] === 'true' || rowData['Track Inventory'] === '1',
-          weight: rowData['Weight'] ? parseFloat(rowData['Weight']) : null,
+          slug: rowData['Slug'],
+          description: rowData['Description'],
+          shortDescription: rowData['Short Description'],
+          price: rowData['Price'],
+          compareAtPrice: rowData['Compare At Price'],
+          costPerItem: rowData['Cost Price'],
+          sku: rowData['SKU'],
+          barcode: rowData['Barcode'],
+          stockQuantity: rowData['Stock Quantity'],
+          lowStockThreshold: rowData['Low Stock Threshold'],
+          trackInventory: rowData['Track Inventory'],
+          weight: rowData['Weight'],
+          weightUnit: rowData['Weight Unit'],
+          length: rowData['Length'],
+          width: rowData['Width'],
+          height: rowData['Height'],
+          dimensionUnit: rowData['Dimension Unit'],
+          isActive: rowData['Is Active'],
+          isFeatured: rowData['Is Featured'],
+          metaTitle: rowData['Meta Title'],
+          metaDescription: rowData['Meta Description'],
+          metaKeywords: rowData['Meta Keywords'],
+        };
+
+        // Apply comprehensive sanitization
+        const sanitized = sanitizeProductData(rawProductData);
+
+        // Generate slug if not provided
+        if (!sanitized.slug) {
+          sanitized.slug = generateSlug(sanitized.name);
+        }
+
+        // Add weight and dimension units with defaults
+        const productData: any = {
+          ...sanitized,
           weightUnit: rowData['Weight Unit'] || 'kg',
-          length: rowData['Length'] ? parseFloat(rowData['Length']) : null,
-          width: rowData['Width'] ? parseFloat(rowData['Width']) : null,
-          height: rowData['Height'] ? parseFloat(rowData['Height']) : null,
           dimensionUnit: rowData['Dimension Unit'] || 'cm',
-          isActive: rowData['Is Active'] === 'true' || rowData['Is Active'] === '1',
-          isFeatured: rowData['Is Featured'] === 'true' || rowData['Is Featured'] === '1',
-          metaTitle: rowData['Meta Title'] || null,
-          metaDescription: rowData['Meta Description'] || null,
-          metaKeywords: rowData['Meta Keywords'] || null,
+          barcode: rowData['Barcode'] || null,
         };
 
         if (existingProduct) {
@@ -147,14 +238,43 @@ export const POST = withAuth(async (req: NextRequest) => {
       }
     }
 
+    // Log import completion
+    await auditLog(req, {
+      userId: context.userId,
+      action: 'import_products',
+      resource: 'products',
+      status: 'success',
+      metadata: {
+        created: results.created,
+        updated: results.updated,
+        failed: results.failed,
+        totalRows: rows.length,
+        securityWarnings: results.securityWarnings.length,
+      },
+    });
+
+    // If security warnings were detected, include them in response
+    if (results.securityWarnings.length > 0) {
+      console.warn('⚠️  Security warnings during CSV import:', results.securityWarnings);
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Import completed',
       results,
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error importing products:', error);
+
+    await auditLog(req, {
+      userId: context.userId,
+      action: 'import_products',
+      resource: 'products',
+      status: 'failed',
+      errorMessage: error.message,
+    });
+
     return NextResponse.json(
       { error: 'Failed to import products' },
       { status: 500 }

@@ -95,7 +95,10 @@ Before deploying to production, ensure you've completed ALL items:
 - [ ] ✅ CSRF protection is enabled
 - [ ] ✅ CORS is configured for your domain only
 - [ ] ✅ Input validation on all endpoints
-- [ ] ✅ File upload size limits are configured
+- [ ] ✅ Input sanitization is applied to all user input
+- [ ] ✅ CSV import sanitization prevents formula injection
+- [ ] ✅ XSS and SQL injection detection is active
+- [ ] ✅ File upload size limits are configured (10MB max for CSV)
 
 ### Secrets Management
 - [ ] ✅ .env.local is in .gitignore (never committed)
@@ -254,6 +257,8 @@ Rotate secrets regularly (recommended: every 90 days):
 - File upload rejections (potential malware uploads)
 - Rate limit violations
 - Admin action frequency
+- Input sanitization rejections (XSS, SQL injection, CSV injection attempts)
+- Security violations in CSV imports
 
 ### Set Up Alerts For:
 
