@@ -16,6 +16,9 @@ export function slugify(text: string): string {
     .trim();
 }
 
+// Alias for slugify (for consistency)
+export const generateSlug = slugify;
+
 // Format currency
 export function formatCurrency(amount: number, currency: string = 'USD'): string {
   return new Intl.NumberFormat('en-US', {

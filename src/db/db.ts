@@ -2,16 +2,20 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as dotenv from 'dotenv';
 import * as schema from './schema';
+import path from 'path';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from .env.local (for scripts like seed)
+// Next.js API routes load .env.local automatically, so this is safe to call
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+}
 
 // Validate DATABASE_URL
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL is not defined in environment variables');
 }
 
-// Parse DATABASE_URL manually (same approach that worked for seed)
+// Parse DATABASE_URL manually
 const url = new URL(process.env.DATABASE_URL);
 
 // Create PostgreSQL connection pool

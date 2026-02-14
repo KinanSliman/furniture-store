@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 
-export async function withAuth(
+export function withAuth(
   handler: (req: NextRequest, context: { userId: string; role: string }) => Promise<NextResponse>,
   requiredRole?: 'admin' | 'super_admin'
 ) {

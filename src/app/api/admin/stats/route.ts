@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db/db';
 import { orders, products, users } from '@/db/schema';
-import { sql, gte, eq, and, lt } from 'drizzle-orm';
+import { sql, gte, eq, and, lt, desc, asc } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 
-export const GET = withAuth(async (req: NextRequest) => {
+export const GET = withAuth(async (req: NextRequest, context) => {
   try {
+    console.log('📊 Stats API called by user:', context.userId, 'role:', context.role);
+
     // Get date ranges for calculations
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -106,28 +108,31 @@ export const GET = withAuth(async (req: NextRequest) => {
         )
       );
 
-    // Get recent orders (last 5)
-    const recentOrders = await db.query.orders.findMany({
-      orderBy: (orders, { desc }) => [desc(orders.createdAt)],
-      limit: 5,
-      with: {
-        user: {
-          columns: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
-    });
+    // Get recent orders (last 5) using db.select() instead of db.query
+    const recentOrdersRaw = await db
+      .select({
+        id: orders.id,
+        orderNumber: orders.orderNumber,
+        userId: orders.userId,
+        email: orders.email,
+        total: orders.total,
+        status: orders.status,
+        paymentStatus: orders.paymentStatus,
+        createdAt: orders.createdAt,
+        userFirstName: users.firstName,
+        userLastName: users.lastName,
+      })
+      .from(orders)
+      .leftJoin(users, eq(orders.userId, users.id))
+      .orderBy(desc(orders.createdAt))
+      .limit(5);
 
     // Format recent orders for response
-    const formattedRecentOrders = recentOrders.map((order) => ({
+    const formattedRecentOrders = recentOrdersRaw.map((order) => ({
       id: order.id,
       orderNumber: order.orderNumber,
-      customerName: order.user
-        ? `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim() || 'Guest'
+      customerName: order.userFirstName && order.userLastName
+        ? `${order.userFirstName} ${order.userLastName}`.trim()
         : 'Guest',
       email: order.email,
       total: parseFloat(order.total),
@@ -136,25 +141,27 @@ export const GET = withAuth(async (req: NextRequest) => {
       createdAt: order.createdAt.toISOString(),
     }));
 
-    // Get low stock products for dashboard alerts (limit to 5)
-    const lowStockProductsList = await db.query.products.findMany({
-      where: and(
-        eq(products.isActive, true),
-        eq(products.trackInventory, true),
-        sql`${products.stockQuantity} <= ${products.lowStockThreshold}`
-      ),
-      orderBy: (products, { asc }) => [asc(products.stockQuantity)],
-      limit: 5,
-      columns: {
-        id: true,
-        name: true,
-        sku: true,
-        stockQuantity: true,
-        lowStockThreshold: true,
-      },
-    });
+    // Get low stock products for dashboard alerts (limit to 5) using db.select()
+    const lowStockProductsList = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        sku: products.sku,
+        stockQuantity: products.stockQuantity,
+        lowStockThreshold: products.lowStockThreshold,
+      })
+      .from(products)
+      .where(
+        and(
+          eq(products.isActive, true),
+          eq(products.trackInventory, true),
+          sql`${products.stockQuantity} <= ${products.lowStockThreshold}`
+        )
+      )
+      .orderBy(asc(products.stockQuantity))
+      .limit(5);
 
-    return NextResponse.json({
+    const responseData = {
       stats: {
         revenue: {
           total: currentRevenue,
@@ -175,12 +182,18 @@ export const GET = withAuth(async (req: NextRequest) => {
       },
       recentOrders: formattedRecentOrders,
       lowStockProducts: lowStockProductsList,
-    });
+    };
 
-  } catch (error) {
+    console.log('✅ Stats API response:', JSON.stringify(responseData, null, 2));
+
+    return NextResponse.json(responseData);
+
+  } catch (error: any) {
     console.error('Error fetching dashboard stats:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
     return NextResponse.json(
-      { error: 'Failed to fetch dashboard stats' },
+      { error: 'Failed to fetch dashboard stats', message: error.message },
       { status: 500 }
     );
   }

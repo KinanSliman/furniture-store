@@ -19,35 +19,29 @@ export const GET = withAuth(async (req: NextRequest) => {
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = (page - 1) * limit;
 
-    // Build conditions for products
-    let conditions = [];
-
-    if (alertType === 'out_of_stock') {
-      conditions.push(
-        and(
-          eq(products.trackInventory, true),
-          eq(products.stockQuantity, 0)
-        )
-      );
-    } else if (alertType === 'low_stock') {
-      conditions.push(
-        and(
-          eq(products.trackInventory, true),
-          sql`${products.stockQuantity} > 0 AND ${products.stockQuantity} <= ${products.lowStockThreshold}`
-        )
-      );
-    } else {
-      // All tracked inventory
-      conditions.push(eq(products.trackInventory, true));
-    }
-
     // Build sort
     const sortColumn = products[sortBy as keyof typeof products] || products.stockQuantity;
     const orderFn = sortOrder === 'asc' ? asc : desc;
 
+    // Build where condition function for db.query
+    let whereCondition;
+    if (alertType === 'out_of_stock') {
+      whereCondition = (products: any, { and, eq }: any) => and(
+        eq(products.trackInventory, true),
+        eq(products.stockQuantity, 0)
+      );
+    } else if (alertType === 'low_stock') {
+      whereCondition = (products: any, { and, eq, sql }: any) => and(
+        eq(products.trackInventory, true),
+        sql`${products.stockQuantity} > 0 AND ${products.stockQuantity} <= ${products.lowStockThreshold}`
+      );
+    } else {
+      whereCondition = (products: any, { eq }: any) => eq(products.trackInventory, true);
+    }
+
     // Get products with inventory tracking
     const productsList = await db.query.products.findMany({
-      where: conditions.length > 0 ? and(...conditions) : undefined,
+      where: whereCondition,
       orderBy: orderFn(sortColumn),
       limit,
       offset,
@@ -60,11 +54,27 @@ export const GET = withAuth(async (req: NextRequest) => {
       },
     });
 
+    // Build where condition for db.select (different syntax)
+    let selectWhereCondition;
+    if (alertType === 'out_of_stock') {
+      selectWhereCondition = and(
+        eq(products.trackInventory, true),
+        eq(products.stockQuantity, 0)
+      );
+    } else if (alertType === 'low_stock') {
+      selectWhereCondition = and(
+        eq(products.trackInventory, true),
+        sql`${products.stockQuantity} > 0 AND ${products.stockQuantity} <= ${products.lowStockThreshold}`
+      );
+    } else {
+      selectWhereCondition = eq(products.trackInventory, true);
+    }
+
     // Get total count
     const totalCount = await db
       .select({ count: sql<number>`count(*)` })
       .from(products)
-      .where(conditions.length > 0 ? and(...conditions) : undefined);
+      .where(selectWhereCondition);
 
     // Calculate alerts summary
     const [outOfStockCount] = await db
@@ -89,9 +99,9 @@ export const GET = withAuth(async (req: NextRequest) => {
 
     // Get variant alerts
     const variantsLowStock = await db.query.productVariants.findMany({
-      where: and(
-        eq(productVariants.isActive, true),
-        sql`${productVariants.stockQuantity} > 0 AND ${productVariants.stockQuantity} <= 10`
+      where: (variants, { and, eq, sql }) => and(
+        eq(variants.isActive, true),
+        sql`${variants.stockQuantity} > 0 AND ${variants.stockQuantity} <= 10`
       ),
       with: {
         product: {
@@ -106,9 +116,9 @@ export const GET = withAuth(async (req: NextRequest) => {
     });
 
     const variantsOutOfStock = await db.query.productVariants.findMany({
-      where: and(
-        eq(productVariants.isActive, true),
-        eq(productVariants.stockQuantity, 0)
+      where: (variants, { and, eq }) => and(
+        eq(variants.isActive, true),
+        eq(variants.stockQuantity, 0)
       ),
       with: {
         product: {

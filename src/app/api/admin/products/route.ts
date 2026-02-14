@@ -5,7 +5,7 @@ import { eq, like, or, desc, asc, sql, and } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 import { generateSlug } from '@/lib/utils';
 
-export const GET = withAuth(async (req: NextRequest) => {
+export const GET = withAuth(async (req: NextRequest, context) => {
   try {
     const { searchParams } = new URL(req.url);
 
@@ -20,11 +20,11 @@ export const GET = withAuth(async (req: NextRequest) => {
     const sortBy = searchParams.get('sortBy') || 'createdAt';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
-    // Build query conditions
-    let conditions = [];
+    // Build where condition for db.select (different from db.query)
+    let selectConditions = [];
 
     if (search) {
-      conditions.push(
+      selectConditions.push(
         or(
           like(products.name, `%${search}%`),
           like(products.sku, `%${search}%`)
@@ -33,33 +33,53 @@ export const GET = withAuth(async (req: NextRequest) => {
     }
 
     if (isActive !== null && isActive !== undefined) {
-      conditions.push(eq(products.isActive, isActive === 'true'));
+      selectConditions.push(eq(products.isActive, isActive === 'true'));
     }
 
-    // Build sort
-    const sortColumn = products[sortBy as keyof typeof products] || products.createdAt;
-    const orderFn = sortOrder === 'asc' ? asc : desc;
+    // Build where function for db.query
+    let whereCondition;
+    if (search && isActive !== null && isActive !== undefined) {
+      whereCondition = (products: any, { and, or, eq, like }: any) => and(
+        or(
+          like(products.name, `%${search}%`),
+          like(products.sku, `%${search}%`)
+        ),
+        eq(products.isActive, isActive === 'true')
+      );
+    } else if (search) {
+      whereCondition = (products: any, { or, like }: any) => or(
+        like(products.name, `%${search}%`),
+        like(products.sku, `%${search}%`)
+      );
+    } else if (isActive !== null && isActive !== undefined) {
+      whereCondition = (products: any, { eq }: any) => eq(products.isActive, isActive === 'true');
+    }
+
+    // Build orderBy function
+    const orderByFn = sortOrder === 'asc'
+      ? (products: any, { asc }: any) => [asc(products[sortBy] || products.createdAt)]
+      : (products: any, { desc }: any) => [desc(products[sortBy] || products.createdAt)];
 
     // Query products
     const productsList = await db.query.products.findMany({
-      where: conditions.length > 0 ? and(...conditions) : undefined,
-      orderBy: orderFn(sortColumn),
+      where: whereCondition,
+      orderBy: orderByFn,
       limit,
       offset,
       with: {
         images: {
-          orderBy: asc(productImages.displayOrder),
+          orderBy: (images, { asc }) => [asc(images.displayOrder)],
           limit: 1,
         },
         variants: true,
       },
     });
 
-    // Get total count
+    // Get total count using db.select syntax
     const totalCount = await db
       .select({ count: sql<number>`count(*)` })
       .from(products)
-      .where(conditions.length > 0 ? and(...conditions) : undefined);
+      .where(selectConditions.length > 0 ? and(...selectConditions) : undefined);
 
     return NextResponse.json({
       products: productsList,
@@ -80,7 +100,7 @@ export const GET = withAuth(async (req: NextRequest) => {
   }
 }, 'admin');
 
-export const POST = withAuth(async (req: NextRequest) => {
+export const POST = withAuth(async (req: NextRequest, context) => {
   try {
     const body = await req.json();
 
@@ -97,7 +117,7 @@ export const POST = withAuth(async (req: NextRequest) => {
 
     // Check if slug already exists
     const existingProduct = await db.query.products.findFirst({
-      where: eq(products.slug, slug),
+      where: (products, { eq }) => eq(products.slug, slug),
     });
 
     if (existingProduct) {
@@ -167,10 +187,12 @@ export const POST = withAuth(async (req: NextRequest) => {
       { status: 201 }
     );
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating product:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
     return NextResponse.json(
-      { error: 'Failed to create product' },
+      { error: 'Failed to create product', message: error.message },
       { status: 500 }
     );
   }
