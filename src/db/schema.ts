@@ -654,6 +654,40 @@ export const wishlists = pgTable('wishlists', {
 }));
 
 // ============================================================================
+// AUDIT LOGS (Security & Compliance)
+// ============================================================================
+
+export const auditLogs = pgTable('audit_logs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }), // Admin who performed the action
+  action: varchar('action', { length: 100 }).notNull(), // create, update, delete, login, etc.
+  resource: varchar('resource', { length: 100 }).notNull(), // products, orders, users, etc.
+  resourceId: varchar('resource_id', { length: 255 }), // ID of the affected resource
+  method: varchar('method', { length: 10 }), // GET, POST, PUT, PATCH, DELETE
+  endpoint: varchar('endpoint', { length: 500 }), // API endpoint called
+
+  // Request details
+  ipAddress: varchar('ip_address', { length: 45 }),
+  userAgent: text('user_agent'),
+
+  // Change tracking
+  changes: jsonb('changes'), // Before/after values for updates
+  metadata: jsonb('metadata'), // Additional context (query params, etc.)
+
+  // Status
+  status: varchar('status', { length: 20 }).notNull(), // success, failure, error
+  errorMessage: text('error_message'), // Error details if status is failure/error
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('audit_logs_user_id_idx').on(table.userId),
+  actionIdx: index('audit_logs_action_idx').on(table.action),
+  resourceIdx: index('audit_logs_resource_idx').on(table.resource),
+  createdAtIdx: index('audit_logs_created_at_idx').on(table.createdAt),
+  statusIdx: index('audit_logs_status_idx').on(table.status),
+}));
+
+// ============================================================================
 // RELATIONS (for Drizzle query API)
 // ============================================================================
 
@@ -762,4 +796,12 @@ export const productTagsRelations = relations(productTags, ({ one }) => ({
 export const usersRelations = relations(users, ({ many }) => ({
   orders: many(orders),
   reviews: many(productReviews),
+  auditLogs: many(auditLogs),
+}));
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [auditLogs.userId],
+    references: [users.id],
+  }),
 }));

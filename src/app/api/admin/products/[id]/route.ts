@@ -3,6 +3,7 @@ import { db } from '@/db/db';
 import { products, productImages, productCategories } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
+import { auditLog, trackChanges } from '@/lib/audit-log';
 
 // GET single product
 export const GET = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
@@ -45,9 +46,9 @@ export const GET = withAuth(async (req: NextRequest, { params }: { params: { id:
 }, 'admin');
 
 // PATCH (update) product
-export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const PATCH = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
 
     // Check if product exists
@@ -108,6 +109,9 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { i
     // Add updated timestamp
     updateData.updatedAt = new Date();
 
+    // Track changes for audit log
+    const changes = trackChanges(existingProduct, updateData);
+
     // Update product
     const [updatedProduct] = await db
       .update(products)
@@ -151,13 +155,39 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { i
       }
     }
 
+    // Log the update action
+    await auditLog(req, {
+      userId: context.userId,
+      action: 'update',
+      resource: 'product',
+      resourceId: id,
+      changes: Object.keys(changes).length > 0 ? changes : undefined,
+      metadata: {
+        productName: updatedProduct.name,
+        sku: updatedProduct.sku,
+      },
+      status: 'success',
+    });
+
     return NextResponse.json({
       message: 'Product updated successfully',
       product: updatedProduct,
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating product:', error);
+
+    // Log failed update
+    const { id } = await params;
+    await auditLog(req, {
+      userId: context.userId,
+      action: 'update',
+      resource: 'product',
+      resourceId: id,
+      status: 'error',
+      errorMessage: error.message || 'Unknown error',
+    });
+
     return NextResponse.json(
       { error: 'Failed to update product' },
       { status: 500 }
@@ -166,9 +196,9 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { i
 }, 'admin');
 
 // DELETE product
-export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const DELETE = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Check if product exists
     const existingProduct = await db.query.products.findFirst({
@@ -185,11 +215,37 @@ export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { 
     // Delete product (cascade will handle related records)
     await db.delete(products).where(eq(products.id, id));
 
+    // Log the delete action
+    await auditLog(req, {
+      userId: context.userId,
+      action: 'delete',
+      resource: 'product',
+      resourceId: id,
+      metadata: {
+        productName: existingProduct.name,
+        sku: existingProduct.sku,
+      },
+      status: 'success',
+    });
+
     return NextResponse.json({
       message: 'Product deleted successfully',
     });
 
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Error deleting product:', error);
+
+    // Log failed delete
+    const { id } = await params;
+    await auditLog(req, {
+      userId: context.userId,
+      action: 'delete',
+      resource: 'product',
+      resourceId: id,
+      status: 'error',
+      errorMessage: error.message || 'Unknown error',
+    });
+
     console.error('Error deleting product:', error);
     return NextResponse.json(
       { error: 'Failed to delete product' },

@@ -5,6 +5,7 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { verifyPassword, generateToken } from "@/lib/auth";
 import { strictRateLimit, addRateLimitHeaders } from "@/lib/rate-limit";
+import { logLogin, logFailedLogin } from "@/lib/audit-log";
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -52,6 +53,8 @@ export async function POST(req: NextRequest) {
 
     if (!user) {
       await pool.end();
+      // Log failed login attempt
+      await logFailedLogin(req, email, 'User not found');
       return NextResponse.json(
         { error: "Invalid email or password" },
         { status: 401 },
@@ -61,6 +64,8 @@ export async function POST(req: NextRequest) {
     // Check if user is admin
     if (!["admin", "super_admin"].includes(user.role)) {
       await pool.end();
+      // Log failed login attempt
+      await logFailedLogin(req, email, 'Not an admin user');
       return NextResponse.json(
         { error: "Access denied - Admin access required" },
         { status: 403 },
@@ -70,6 +75,8 @@ export async function POST(req: NextRequest) {
     // Check if account is active
     if (!user.isActive) {
       await pool.end();
+      // Log failed login attempt
+      await logFailedLogin(req, email, 'Account is disabled');
       return NextResponse.json(
         { error: "Account is disabled" },
         { status: 403 },
@@ -80,6 +87,8 @@ export async function POST(req: NextRequest) {
     const isValidPassword = await verifyPassword(password, user.passwordHash);
     if (!isValidPassword) {
       await pool.end();
+      // Log failed login attempt
+      await logFailedLogin(req, email, 'Invalid password');
       return NextResponse.json(
         { error: "Invalid email or password" },
         { status: 401 },
@@ -98,6 +107,9 @@ export async function POST(req: NextRequest) {
       .update(users)
       .set({ lastLoginAt: new Date() })
       .where(eq(users.id, user.id));
+
+    // Log successful login
+    await logLogin(req, user.id, user.email);
 
     await pool.end();
 

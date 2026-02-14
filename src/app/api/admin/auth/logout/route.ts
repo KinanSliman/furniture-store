@@ -1,7 +1,20 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/auth';
+import { logLogout } from '@/lib/audit-log';
 
-export async function POST() {
+export async function POST(req: NextRequest) {
   try {
+    // Get user ID from token before clearing it
+    const token = req.cookies.get('auth-token')?.value;
+    let userId: string | undefined;
+
+    if (token) {
+      const payload = verifyToken(token);
+      if (payload) {
+        userId = payload.userId;
+      }
+    }
+
     const response = NextResponse.json({
       success: true,
       message: 'Logged out successfully',
@@ -16,8 +29,13 @@ export async function POST() {
       path: '/',
     });
 
+    // Log logout if we have a user ID
+    if (userId) {
+      await logLogout(req, userId);
+    }
+
     return response;
-    
+
   } catch (error) {
     console.error('Logout error:', error);
     return NextResponse.json(
