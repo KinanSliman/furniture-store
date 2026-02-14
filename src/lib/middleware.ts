@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 import { rateLimit, addRateLimitHeaders } from '@/lib/rate-limit';
+import { csrfProtection } from '@/lib/csrf';
 
 export function withAuth(
   handler: (req: NextRequest, context: { userId: string; role: string }) => Promise<NextResponse>,
@@ -9,6 +10,7 @@ export function withAuth(
     rateLimit?: boolean; // Enable rate limiting (default: true)
     maxRequests?: number;
     windowMs?: number;
+    csrf?: boolean; // Enable CSRF protection (default: true)
   }
 ) {
   return async (req: NextRequest) => {
@@ -22,6 +24,15 @@ export function withAuth(
         });
         if (rateLimitResult) {
           return rateLimitResult;
+        }
+      }
+
+      // Apply CSRF protection for state-changing methods (enabled by default)
+      const csrfEnabled = options?.csrf !== false;
+      if (csrfEnabled && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+        const csrfResult = await csrfProtection(req);
+        if (csrfResult) {
+          return csrfResult;
         }
       }
 
