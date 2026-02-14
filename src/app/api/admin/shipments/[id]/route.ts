@@ -5,9 +5,9 @@ import { eq } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 
 // GET - Get single shipment
-export const GET = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     const shipment = await db.query.shipments.findFirst({
       where: eq(shipments.id, id),
@@ -29,12 +29,12 @@ export const GET = withAuth(async (req: NextRequest, { params }: { params: { id:
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // PATCH - Update shipment
-export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const PATCH = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const body = await req.json();
 
     // Check if shipment exists
@@ -101,12 +101,12 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { i
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // DELETE - Delete shipment
-export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const DELETE = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     // Check if shipment exists
     const existingShipment = await db.query.shipments.findFirst({
@@ -142,4 +142,4 @@ export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { 
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

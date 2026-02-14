@@ -7,6 +7,7 @@ import { ArrowLeft, Save, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import ImageUpload from '@/components/ImageUpload';
 import VariantManager from '@/components/VariantManager';
+import MultilingualInput from '@/components/MultilingualInput';
 
 interface ImageData {
   id?: string;
@@ -33,10 +34,22 @@ interface Variant {
 
 interface Product {
   id: string;
-  name: string;
+  name: string; // Legacy
   slug: string;
-  description: string | null;
-  shortDescription: string | null;
+  description: string | null; // Legacy
+  shortDescription: string | null; // Legacy
+  // Multilingual fields
+  nameEn?: string | null;
+  nameAr?: string | null;
+  descriptionEn?: string | null;
+  descriptionAr?: string | null;
+  shortDescriptionEn?: string | null;
+  shortDescriptionAr?: string | null;
+  metaTitleEn?: string | null;
+  metaTitleAr?: string | null;
+  metaDescriptionEn?: string | null;
+  metaDescriptionAr?: string | null;
+  // Other fields
   price: string;
   compareAtPrice: string | null;
   costPrice: string | null;
@@ -53,8 +66,8 @@ interface Product {
   dimensionUnit: string;
   isActive: boolean;
   isFeatured: boolean;
-  metaTitle: string | null;
-  metaDescription: string | null;
+  metaTitle: string | null; // Legacy
+  metaDescription: string | null; // Legacy
   metaKeywords: string | null;
 }
 
@@ -70,10 +83,22 @@ export default function EditProductPage() {
   const [variants, setVariants] = useState<Variant[]>([]);
   const [formData, setFormData] = useState<Product>({
     id: '',
-    name: '',
+    name: '', // Legacy
     slug: '',
-    description: '',
-    shortDescription: '',
+    description: '', // Legacy
+    shortDescription: '', // Legacy
+    // Multilingual fields
+    nameEn: '',
+    nameAr: '',
+    descriptionEn: '',
+    descriptionAr: '',
+    shortDescriptionEn: '',
+    shortDescriptionAr: '',
+    metaTitleEn: '',
+    metaTitleAr: '',
+    metaDescriptionEn: '',
+    metaDescriptionAr: '',
+    // Other fields
     price: '',
     compareAtPrice: '',
     costPrice: '',
@@ -90,8 +115,8 @@ export default function EditProductPage() {
     dimensionUnit: 'cm',
     isActive: true,
     isFeatured: false,
-    metaTitle: '',
-    metaDescription: '',
+    metaTitle: '', // Legacy
+    metaDescription: '', // Legacy
     metaKeywords: '',
   });
 
@@ -111,8 +136,23 @@ export default function EditProductPage() {
       const data = await response.json();
       setFormData({
         ...data.product,
+        // Legacy fields
         description: data.product.description || '',
         shortDescription: data.product.shortDescription || '',
+        metaTitle: data.product.metaTitle || '',
+        metaDescription: data.product.metaDescription || '',
+        // Multilingual fields
+        nameEn: data.product.nameEn || '',
+        nameAr: data.product.nameAr || '',
+        descriptionEn: data.product.descriptionEn || '',
+        descriptionAr: data.product.descriptionAr || '',
+        shortDescriptionEn: data.product.shortDescriptionEn || '',
+        shortDescriptionAr: data.product.shortDescriptionAr || '',
+        metaTitleEn: data.product.metaTitleEn || '',
+        metaTitleAr: data.product.metaTitleAr || '',
+        metaDescriptionEn: data.product.metaDescriptionEn || '',
+        metaDescriptionAr: data.product.metaDescriptionAr || '',
+        // Other fields
         compareAtPrice: data.product.compareAtPrice || '',
         costPrice: data.product.costPrice || '',
         sku: data.product.sku || '',
@@ -121,8 +161,6 @@ export default function EditProductPage() {
         length: data.product.length || '',
         width: data.product.width || '',
         height: data.product.height || '',
-        metaTitle: data.product.metaTitle || '',
-        metaDescription: data.product.metaDescription || '',
         metaKeywords: data.product.metaKeywords || '',
       });
 
@@ -161,6 +199,20 @@ export default function EditProductPage() {
       setFormData((prev) => ({ ...prev, [name]: parseFloat(value) || 0 }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  // Handler for multilingual input fields
+  const handleMultilingualChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+    // Keep legacy fields in sync with English version for backward compatibility
+    if (field === 'nameEn') {
+      setFormData((prev) => ({ ...prev, name: value }));
+    } else if (field === 'descriptionEn') {
+      setFormData((prev) => ({ ...prev, description: value }));
+    } else if (field === 'shortDescriptionEn') {
+      setFormData((prev) => ({ ...prev, shortDescription: value }));
     }
   };
 
@@ -307,21 +359,17 @@ export default function EditProductPage() {
               <h2 className="text-lg font-semibold text-slate-900 mb-4">Basic Information</h2>
 
               <div className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
-                    Product Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Enter product name"
-                  />
-                </div>
+                <MultilingualInput
+                  label="Product Name"
+                  nameEn="nameEn"
+                  nameAr="nameAr"
+                  valueEn={formData.nameEn || ''}
+                  valueAr={formData.nameAr || ''}
+                  onChange={handleMultilingualChange}
+                  type="text"
+                  required={true}
+                  placeholder="Enter product name"
+                />
 
                 <div>
                   <label htmlFor="slug" className="block text-sm font-medium text-slate-700 mb-1">
@@ -338,35 +386,29 @@ export default function EditProductPage() {
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="shortDescription" className="block text-sm font-medium text-slate-700 mb-1">
-                    Short Description
-                  </label>
-                  <textarea
-                    id="shortDescription"
-                    name="shortDescription"
-                    value={formData.shortDescription}
-                    onChange={handleChange}
-                    rows={2}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Brief product description for listings"
-                  />
-                </div>
+                <MultilingualInput
+                  label="Short Description"
+                  nameEn="shortDescriptionEn"
+                  nameAr="shortDescriptionAr"
+                  valueEn={formData.shortDescriptionEn || ''}
+                  valueAr={formData.shortDescriptionAr || ''}
+                  onChange={handleMultilingualChange}
+                  type="textarea"
+                  rows={2}
+                  placeholder="Brief product description for listings"
+                />
 
-                <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-slate-700 mb-1">
-                    Full Description
-                  </label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    rows={6}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Detailed product description"
-                  />
-                </div>
+                <MultilingualInput
+                  label="Full Description"
+                  nameEn="descriptionEn"
+                  nameAr="descriptionAr"
+                  valueEn={formData.descriptionEn || ''}
+                  valueAr={formData.descriptionAr || ''}
+                  onChange={handleMultilingualChange}
+                  type="textarea"
+                  rows={6}
+                  placeholder="Detailed product description"
+                />
               </div>
             </div>
 
@@ -657,43 +699,28 @@ export default function EditProductPage() {
               <h2 className="text-lg font-semibold text-slate-900 mb-4">SEO</h2>
 
               <div className="space-y-4">
-                <div>
-                  <label htmlFor="metaTitle" className="block text-sm font-medium text-slate-700 mb-1">
-                    Meta Title
-                  </label>
-                  <input
-                    type="text"
-                    id="metaTitle"
-                    name="metaTitle"
-                    value={formData.metaTitle}
-                    onChange={handleChange}
-                    maxLength={60}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Product meta title for search engines"
-                  />
-                  <p className="text-xs text-slate-500 mt-1">
-                    {formData.metaTitle.length}/60 characters
-                  </p>
-                </div>
+                <MultilingualInput
+                  label="Meta Title"
+                  nameEn="metaTitleEn"
+                  nameAr="metaTitleAr"
+                  valueEn={formData.metaTitleEn || ''}
+                  valueAr={formData.metaTitleAr || ''}
+                  onChange={handleMultilingualChange}
+                  type="text"
+                  placeholder="Product meta title for search engines (max 60 chars)"
+                />
 
-                <div>
-                  <label htmlFor="metaDescription" className="block text-sm font-medium text-slate-700 mb-1">
-                    Meta Description
-                  </label>
-                  <textarea
-                    id="metaDescription"
-                    name="metaDescription"
-                    value={formData.metaDescription}
-                    onChange={handleChange}
-                    maxLength={160}
-                    rows={3}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Product meta description for search engines"
-                  />
-                  <p className="text-xs text-slate-500 mt-1">
-                    {formData.metaDescription.length}/160 characters
-                  </p>
-                </div>
+                <MultilingualInput
+                  label="Meta Description"
+                  nameEn="metaDescriptionEn"
+                  nameAr="metaDescriptionAr"
+                  valueEn={formData.metaDescriptionEn || ''}
+                  valueAr={formData.metaDescriptionAr || ''}
+                  onChange={handleMultilingualChange}
+                  type="textarea"
+                  rows={3}
+                  placeholder="Product meta description for search engines (max 160 chars)"
+                />
 
                 <div>
                   <label htmlFor="metaKeywords" className="block text-sm font-medium text-slate-700 mb-1">

@@ -5,9 +5,9 @@ import { eq } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 
 // GET - Get single review
-export const GET = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     const review = await db.query.productReviews.findFirst({
       where: eq(productReviews.id, id),
@@ -52,12 +52,12 @@ export const GET = withAuth(async (req: NextRequest, { params }: { params: { id:
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // PATCH - Update review (approve/reject, etc.)
-export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const PATCH = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const body = await req.json();
 
     // Check if review exists
@@ -100,12 +100,12 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { i
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // DELETE - Delete review
-export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const DELETE = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     // Check if review exists
     const existingReview = await db.query.productReviews.findFirst({
@@ -133,4 +133,4 @@ export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { 
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLocale } from 'next-intl';
 import {
   Folder,
   Plus,
@@ -14,46 +15,69 @@ import {
   FolderTree
 } from 'lucide-react';
 import { toast } from 'sonner';
+import MultilingualInput from '@/components/MultilingualInput';
+import { getLocalizedField } from '@/lib/i18n-helpers';
 
 interface Category {
   id: string;
-  name: string;
+  name: string; // Legacy
+  nameEn?: string | null;
+  nameAr?: string | null;
   slug: string;
-  description: string | null;
+  description: string | null; // Legacy
+  descriptionEn?: string | null;
+  descriptionAr?: string | null;
+  metaTitleEn?: string | null;
+  metaTitleAr?: string | null;
+  metaDescriptionEn?: string | null;
+  metaDescriptionAr?: string | null;
   imageUrl: string | null;
   parentId: string | null;
   displayOrder: number;
   isActive: boolean;
-  metaTitle: string | null;
-  metaDescription: string | null;
+  metaTitle: string | null; // Legacy
+  metaDescription: string | null; // Legacy
   parent?: {
     id: string;
     name: string;
+    nameEn?: string | null;
+    nameAr?: string | null;
     slug: string;
   } | null;
   children?: Array<{
     id: string;
     name: string;
+    nameEn?: string | null;
+    nameAr?: string | null;
     slug: string;
     isActive: boolean;
   }>;
 }
 
 export default function CategoriesPage() {
+  const locale = useLocale() as 'en' | 'ar';
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [formData, setFormData] = useState({
-    name: '',
+    name: '', // Legacy
     slug: '',
-    description: '',
+    description: '', // Legacy
+    nameEn: '',
+    nameAr: '',
+    descriptionEn: '',
+    descriptionAr: '',
+    metaTitleEn: '',
+    metaTitleAr: '',
+    metaDescriptionEn: '',
+    metaDescriptionAr: '',
     parentId: '',
     displayOrder: 0,
     isActive: true,
-    metaTitle: '',
-    metaDescription: '',
+    metaTitle: '', // Legacy
+    metaDescription: '', // Legacy
   });
 
   useEffect(() => {
@@ -86,6 +110,14 @@ export default function CategoriesPage() {
         name: category.name,
         slug: category.slug,
         description: category.description || '',
+        nameEn: category.nameEn || '',
+        nameAr: category.nameAr || '',
+        descriptionEn: category.descriptionEn || '',
+        descriptionAr: category.descriptionAr || '',
+        metaTitleEn: category.metaTitleEn || '',
+        metaTitleAr: category.metaTitleAr || '',
+        metaDescriptionEn: category.metaDescriptionEn || '',
+        metaDescriptionAr: category.metaDescriptionAr || '',
         parentId: category.parentId || '',
         displayOrder: category.displayOrder,
         isActive: category.isActive,
@@ -98,6 +130,14 @@ export default function CategoriesPage() {
         name: '',
         slug: '',
         description: '',
+        nameEn: '',
+        nameAr: '',
+        descriptionEn: '',
+        descriptionAr: '',
+        metaTitleEn: '',
+        metaTitleAr: '',
+        metaDescriptionEn: '',
+        metaDescriptionAr: '',
         parentId: '',
         displayOrder: 0,
         isActive: true,
@@ -125,13 +165,34 @@ export default function CategoriesPage() {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
 
-    // Auto-generate slug from name
-    if (name === 'name' && !formData.slug && !editingCategory) {
+    // Auto-generate slug from nameEn
+    if (name === 'nameEn' && !formData.slug && !editingCategory) {
       const slug = value
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
       setFormData((prev) => ({ ...prev, slug }));
+    }
+  };
+
+  // Handler for multilingual input fields
+  const handleMultilingualChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+    // Auto-generate slug from nameEn
+    if (field === 'nameEn' && !formData.slug && !editingCategory) {
+      const slug = value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      setFormData((prev) => ({ ...prev, slug }));
+    }
+
+    // Keep legacy fields in sync with English version for backward compatibility
+    if (field === 'nameEn') {
+      setFormData((prev) => ({ ...prev, name: value }));
+    } else if (field === 'descriptionEn') {
+      setFormData((prev) => ({ ...prev, description: value }));
     }
   };
 
@@ -269,7 +330,7 @@ export default function CategoriesPage() {
                         <FolderTree size={20} className="text-purple-600" />
                         <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-slate-900">{category.name}</h3>
+                            <h3 className="font-semibold text-slate-900">{getLocalizedField(category, 'name', locale)}</h3>
                             {catWithChildren.children && catWithChildren.children.length > 0 && (
                               <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
                                 {catWithChildren.children.length} subcategories
@@ -327,7 +388,7 @@ export default function CategoriesPage() {
                             <Folder size={16} className="text-slate-400" />
                             <div>
                               <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-slate-700">{child.name}</span>
+                                <span className="text-sm font-medium text-slate-700">{getLocalizedField(child, 'name', locale)}</span>
                                 {!child.isActive && (
                                   <span className="text-xs text-slate-500">(inactive)</span>
                                 )}
@@ -381,21 +442,17 @@ export default function CategoriesPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
-                  Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="Electronics"
-                />
-              </div>
+              <MultilingualInput
+                label="Category Name"
+                nameEn="nameEn"
+                nameAr="nameAr"
+                valueEn={formData.nameEn}
+                valueAr={formData.nameAr}
+                onChange={handleMultilingualChange}
+                type="text"
+                required={true}
+                placeholder="Electronics / إلكترونيات"
+              />
 
               <div>
                 <label htmlFor="slug" className="block text-sm font-medium text-slate-700 mb-1">
@@ -410,22 +467,20 @@ export default function CategoriesPage() {
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="electronics"
                 />
+                <p className="text-xs text-slate-500 mt-1">Auto-generated from category name if left empty</p>
               </div>
 
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-slate-700 mb-1">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  rows={3}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="Category description"
-                />
-              </div>
+              <MultilingualInput
+                label="Description"
+                nameEn="descriptionEn"
+                nameAr="descriptionAr"
+                valueEn={formData.descriptionEn}
+                valueAr={formData.descriptionAr}
+                onChange={handleMultilingualChange}
+                type="textarea"
+                rows={3}
+                placeholder="Category description"
+              />
 
               <div>
                 <label htmlFor="parentId" className="block text-sm font-medium text-slate-700 mb-1">
@@ -443,7 +498,7 @@ export default function CategoriesPage() {
                     .filter((cat) => !cat.parentId && cat.id !== editingCategory?.id)
                     .map((cat) => (
                       <option key={cat.id} value={cat.id}>
-                        {cat.name}
+                        {getLocalizedField(cat, 'name', locale)}
                       </option>
                     ))}
                 </select>

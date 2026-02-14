@@ -128,15 +128,24 @@ export const addresses = pgTable('addresses', {
 
 export const categories = pgTable('categories', {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: varchar('name', { length: 255 }).notNull(),
+  name: varchar('name', { length: 255 }).notNull(), // Legacy - for backward compatibility
   slug: varchar('slug', { length: 255 }).notNull().unique(),
-  description: text('description'),
+  description: text('description'), // Legacy - for backward compatibility
   imageUrl: varchar('image_url', { length: 500 }),
   parentId: uuid('parent_id'),
   displayOrder: integer('display_order').default(0).notNull(),
   isActive: boolean('is_active').default(true).notNull(),
-  metaTitle: varchar('meta_title', { length: 255 }),
-  metaDescription: text('meta_description'),
+  metaTitle: varchar('meta_title', { length: 255 }), // Legacy - for backward compatibility
+  metaDescription: text('meta_description'), // Legacy - for backward compatibility
+  // Multilingual fields
+  nameEn: varchar('name_en', { length: 255 }),
+  nameAr: varchar('name_ar', { length: 255 }),
+  descriptionEn: text('description_en'),
+  descriptionAr: text('description_ar'),
+  metaTitleEn: varchar('meta_title_en', { length: 255 }),
+  metaTitleAr: varchar('meta_title_ar', { length: 255 }),
+  metaDescriptionEn: text('meta_description_en'),
+  metaDescriptionAr: text('meta_description_ar'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
@@ -163,10 +172,10 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
 
 export const products = pgTable('products', {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: varchar('name', { length: 255 }).notNull(),
+  name: varchar('name', { length: 255 }).notNull(), // Legacy - for backward compatibility
   slug: varchar('slug', { length: 255 }).notNull().unique(),
-  description: text('description'),
-  shortDescription: text('short_description'),
+  description: text('description'), // Legacy - for backward compatibility
+  shortDescription: text('short_description'), // Legacy - for backward compatibility
   price: decimal('price', { precision: 10, scale: 2 }).notNull(),
   compareAtPrice: decimal('compare_at_price', { precision: 10, scale: 2 }), // Original price for sale items
   costPrice: decimal('cost_price', { precision: 10, scale: 2 }), // For profit calculation
@@ -184,9 +193,20 @@ export const products = pgTable('products', {
   isActive: boolean('is_active').default(true).notNull(),
   isFeatured: boolean('is_featured').default(false).notNull(),
   attributes: jsonb('attributes'), // Flexible product attributes (color, size, material, etc.)
-  metaTitle: varchar('meta_title', { length: 255 }),
-  metaDescription: text('meta_description'),
+  metaTitle: varchar('meta_title', { length: 255 }), // Legacy - for backward compatibility
+  metaDescription: text('meta_description'), // Legacy - for backward compatibility
   metaKeywords: varchar('meta_keywords', { length: 500 }),
+  // Multilingual fields
+  nameEn: varchar('name_en', { length: 255 }),
+  nameAr: varchar('name_ar', { length: 255 }),
+  descriptionEn: text('description_en'),
+  descriptionAr: text('description_ar'),
+  shortDescriptionEn: text('short_description_en'),
+  shortDescriptionAr: text('short_description_ar'),
+  metaTitleEn: varchar('meta_title_en', { length: 255 }),
+  metaTitleAr: varchar('meta_title_ar', { length: 255 }),
+  metaDescriptionEn: text('meta_description_en'),
+  metaDescriptionAr: text('meta_description_ar'),
   viewCount: integer('view_count').default(0).notNull(),
   salesCount: integer('sales_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -214,7 +234,7 @@ export const productImages = pgTable('product_images', {
 export const productVariants = pgTable('product_variants', {
   id: uuid('id').defaultRandom().primaryKey(),
   productId: uuid('product_id').references(() => products.id, { onDelete: 'cascade' }).notNull(),
-  name: varchar('name', { length: 255 }).notNull(), // e.g., "Large - Red"
+  name: varchar('name', { length: 255 }).notNull(), // Legacy - e.g., "Large - Red"
   sku: varchar('sku', { length: 100 }).unique(),
   price: decimal('price', { precision: 10, scale: 2 }), // Override product price if set
   compareAtPrice: decimal('compare_at_price', { precision: 10, scale: 2 }),
@@ -224,6 +244,9 @@ export const productVariants = pgTable('product_variants', {
   attributes: jsonb('attributes').notNull(), // { "size": "L", "color": "Red" }
   isActive: boolean('is_active').default(true).notNull(),
   displayOrder: integer('display_order').default(0).notNull(),
+  // Multilingual fields
+  nameEn: varchar('name_en', { length: 255 }),
+  nameAr: varchar('name_ar', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({

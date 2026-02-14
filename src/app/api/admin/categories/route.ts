@@ -96,7 +96,7 @@ export const GET = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 export const POST = withAuth(async (req: NextRequest) => {
   try {
@@ -127,15 +127,26 @@ export const POST = withAuth(async (req: NextRequest) => {
 
     // Create category
     const [newCategory] = await db.insert(categories).values({
-      name: body.name,
+      // Legacy fields (for backward compatibility)
+      name: body.name || body.nameEn || '',
       slug,
-      description: body.description || null,
+      description: body.description || body.descriptionEn || null,
+      metaTitle: body.metaTitle || body.metaTitleEn || null,
+      metaDescription: body.metaDescription || body.metaDescriptionEn || null,
+      // Multilingual fields
+      nameEn: body.nameEn || null,
+      nameAr: body.nameAr || null,
+      descriptionEn: body.descriptionEn || null,
+      descriptionAr: body.descriptionAr || null,
+      metaTitleEn: body.metaTitleEn || null,
+      metaTitleAr: body.metaTitleAr || null,
+      metaDescriptionEn: body.metaDescriptionEn || null,
+      metaDescriptionAr: body.metaDescriptionAr || null,
+      // Other fields
       imageUrl: body.imageUrl || null,
       parentId: body.parentId || null,
       displayOrder: body.displayOrder || 0,
       isActive: body.isActive ?? true,
-      metaTitle: body.metaTitle || null,
-      metaDescription: body.metaDescription || null,
     }).returning();
 
     return NextResponse.json(
@@ -153,4 +164,4 @@ export const POST = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

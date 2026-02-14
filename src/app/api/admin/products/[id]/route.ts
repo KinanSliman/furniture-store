@@ -6,9 +6,9 @@ import { withAuth } from '@/lib/middleware';
 import { auditLog, trackChanges } from '@/lib/audit-log';
 
 // GET single product
-export const GET = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     const product = await db.query.products.findFirst({
       where: eq(products.id, id),
@@ -43,12 +43,12 @@ export const GET = withAuth(async (req: NextRequest, { params }: { params: { id:
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // PATCH (update) product
 export const PATCH = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
     const body = await req.json();
 
     // Check if product exists
@@ -81,10 +81,42 @@ export const PATCH = withAuth(async (req: NextRequest, context) => {
     const updateData: any = {};
 
     // Only include fields that are provided
+    // Legacy fields (sync with English version for backward compatibility)
     if (body.name !== undefined) updateData.name = body.name;
+    if (body.nameEn !== undefined) {
+      updateData.name = body.nameEn; // Keep legacy field in sync
+    }
     if (body.slug !== undefined) updateData.slug = body.slug;
     if (body.description !== undefined) updateData.description = body.description;
+    if (body.descriptionEn !== undefined) {
+      updateData.description = body.descriptionEn; // Keep legacy field in sync
+    }
     if (body.shortDescription !== undefined) updateData.shortDescription = body.shortDescription;
+    if (body.shortDescriptionEn !== undefined) {
+      updateData.shortDescription = body.shortDescriptionEn; // Keep legacy field in sync
+    }
+    if (body.metaTitle !== undefined) updateData.metaTitle = body.metaTitle;
+    if (body.metaTitleEn !== undefined) {
+      updateData.metaTitle = body.metaTitleEn; // Keep legacy field in sync
+    }
+    if (body.metaDescription !== undefined) updateData.metaDescription = body.metaDescription;
+    if (body.metaDescriptionEn !== undefined) {
+      updateData.metaDescription = body.metaDescriptionEn; // Keep legacy field in sync
+    }
+
+    // Multilingual fields
+    if (body.nameEn !== undefined) updateData.nameEn = body.nameEn;
+    if (body.nameAr !== undefined) updateData.nameAr = body.nameAr;
+    if (body.descriptionEn !== undefined) updateData.descriptionEn = body.descriptionEn;
+    if (body.descriptionAr !== undefined) updateData.descriptionAr = body.descriptionAr;
+    if (body.shortDescriptionEn !== undefined) updateData.shortDescriptionEn = body.shortDescriptionEn;
+    if (body.shortDescriptionAr !== undefined) updateData.shortDescriptionAr = body.shortDescriptionAr;
+    if (body.metaTitleEn !== undefined) updateData.metaTitleEn = body.metaTitleEn;
+    if (body.metaTitleAr !== undefined) updateData.metaTitleAr = body.metaTitleAr;
+    if (body.metaDescriptionEn !== undefined) updateData.metaDescriptionEn = body.metaDescriptionEn;
+    if (body.metaDescriptionAr !== undefined) updateData.metaDescriptionAr = body.metaDescriptionAr;
+
+    // Other fields
     if (body.price !== undefined) updateData.price = body.price.toString();
     if (body.compareAtPrice !== undefined) updateData.compareAtPrice = body.compareAtPrice ? body.compareAtPrice.toString() : null;
     if (body.costPrice !== undefined) updateData.costPrice = body.costPrice ? body.costPrice.toString() : null;
@@ -102,8 +134,6 @@ export const PATCH = withAuth(async (req: NextRequest, context) => {
     if (body.isActive !== undefined) updateData.isActive = body.isActive;
     if (body.isFeatured !== undefined) updateData.isFeatured = body.isFeatured;
     if (body.attributes !== undefined) updateData.attributes = body.attributes;
-    if (body.metaTitle !== undefined) updateData.metaTitle = body.metaTitle;
-    if (body.metaDescription !== undefined) updateData.metaDescription = body.metaDescription;
     if (body.metaKeywords !== undefined) updateData.metaKeywords = body.metaKeywords;
 
     // Add updated timestamp
@@ -178,7 +208,7 @@ export const PATCH = withAuth(async (req: NextRequest, context) => {
     console.error('Error updating product:', error);
 
     // Log failed update
-    const { id } = await params;
+    const { id } = await context.params;
     await auditLog(req, {
       userId: context.userId,
       action: 'update',
@@ -193,12 +223,12 @@ export const PATCH = withAuth(async (req: NextRequest, context) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // DELETE product
 export const DELETE = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
 
     // Check if product exists
     const existingProduct = await db.query.products.findFirst({
@@ -236,7 +266,7 @@ export const DELETE = withAuth(async (req: NextRequest, context) => {
     console.error('Error deleting product:', error);
 
     // Log failed delete
-    const { id } = await params;
+    const { id } = await context.params;
     await auditLog(req, {
       userId: context.userId,
       action: 'delete',
@@ -252,4 +282,4 @@ export const DELETE = withAuth(async (req: NextRequest, context) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

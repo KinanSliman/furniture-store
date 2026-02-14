@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useLocale } from 'next-intl';
 import {
   Package,
   Plus,
@@ -17,10 +18,13 @@ import {
   Download
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { getLocalizedField } from '@/lib/i18n-helpers';
 
 interface Product {
   id: string;
-  name: string;
+  name: string; // Legacy
+  nameEn?: string | null;
+  nameAr?: string | null;
   slug: string;
   price: string;
   compareAtPrice: string | null;
@@ -30,6 +34,7 @@ interface Product {
   isFeatured: boolean;
   createdAt: string;
   images?: { url: string; isPrimary: boolean }[];
+  variants?: any[];
 }
 
 interface PaginationData {
@@ -40,6 +45,7 @@ interface PaginationData {
 }
 
 export default function ProductsListPage() {
+  const locale = useLocale() as 'en' | 'ar';
   const [products, setProducts] = useState<Product[]>([]);
   const [pagination, setPagination] = useState<PaginationData>({
     page: 1,
@@ -286,7 +292,7 @@ export default function ProductsListPage() {
                               href={`/admin/products/${product.id}`}
                               className="font-medium text-slate-900 hover:text-purple-600 transition-colors block truncate"
                             >
-                              {product.name}
+                              {getLocalizedField(product, 'name', locale)}
                             </Link>
                             <div className="flex items-center gap-2">
                               <p className="text-sm text-slate-500 truncate">{product.slug}</p>

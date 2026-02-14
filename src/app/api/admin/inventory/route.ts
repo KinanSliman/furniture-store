@@ -159,7 +159,7 @@ export const GET = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // PATCH - Bulk update inventory
 export const PATCH = withAuth(async (req: NextRequest) => {
@@ -210,4 +210,4 @@ export const PATCH = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

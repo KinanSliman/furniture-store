@@ -25,7 +25,7 @@ export const GET = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // PATCH (update) settings
 export const PATCH = withAuth(async (req: NextRequest) => {
@@ -70,4 +70,4 @@ export const PATCH = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

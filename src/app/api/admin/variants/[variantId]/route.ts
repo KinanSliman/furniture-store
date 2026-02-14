@@ -5,9 +5,9 @@ import { eq } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 
 // GET - Get single variant
-export const GET = withAuth(async (req: NextRequest, { params }: { params: { variantId: string } }) => {
+export const GET = withAuth(async (req: NextRequest, context) => {
   try {
-    const { variantId } = params;
+    const { variantId } = await context.params;
 
     const variant = await db.query.productVariants.findFirst({
       where: eq(productVariants.id, variantId),
@@ -29,12 +29,12 @@ export const GET = withAuth(async (req: NextRequest, { params }: { params: { var
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // PATCH - Update variant
-export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { variantId: string } }) => {
+export const PATCH = withAuth(async (req: NextRequest, context) => {
   try {
-    const { variantId } = params;
+    const { variantId } = await context.params;
     const body = await req.json();
 
     // Check if variant exists
@@ -99,12 +99,12 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { v
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // DELETE - Delete variant
-export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { variantId: string } }) => {
+export const DELETE = withAuth(async (req: NextRequest, context) => {
   try {
-    const { variantId } = params;
+    const { variantId } = await context.params;
 
     // Check if variant exists
     const existingVariant = await db.query.productVariants.findFirst({
@@ -132,4 +132,4 @@ export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { 
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

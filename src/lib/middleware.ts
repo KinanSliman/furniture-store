@@ -4,7 +4,7 @@ import { rateLimit, addRateLimitHeaders } from '@/lib/rate-limit';
 import { csrfProtection } from '@/lib/csrf';
 
 export function withAuth(
-  handler: (req: NextRequest, context: { userId: string; role: string }) => Promise<NextResponse>,
+  handler: (req: NextRequest, context: { userId: string; role: string; params: any }) => Promise<NextResponse>,
   requiredRole?: 'admin' | 'super_admin',
   options?: {
     rateLimit?: boolean; // Enable rate limiting (default: true)
@@ -13,7 +13,7 @@ export function withAuth(
     csrf?: boolean; // Enable CSRF protection (default: true)
   }
 ) {
-  return async (req: NextRequest) => {
+  return async (req: NextRequest, context?: any) => {
     try {
       // Apply rate limiting (enabled by default)
       const rateLimitEnabled = options?.rateLimit !== false;
@@ -74,8 +74,12 @@ export function withAuth(
         }
       }
 
-      // Call the handler with user context
-      const response = await handler(req, { userId: payload.userId, role: payload.role });
+      // Call the handler with user context and params
+      const response = await handler(req, {
+        userId: payload.userId,
+        role: payload.role,
+        params: context?.params || {}
+      });
 
       // Add rate limit headers to response
       if (rateLimitEnabled) {

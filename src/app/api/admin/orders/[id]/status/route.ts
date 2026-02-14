@@ -4,9 +4,9 @@ import { orders, orderStatusHistory } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 
-export const POST = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const POST = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const body = await req.json();
 
     if (!body.status) {
@@ -58,4 +58,4 @@ export const POST = withAuth(async (req: NextRequest, { params }: { params: { id
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

@@ -98,4 +98,4 @@ export const GET = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

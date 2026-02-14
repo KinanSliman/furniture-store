@@ -52,7 +52,7 @@ export const POST = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // DELETE - Delete image from Cloudinary
 export const DELETE = withAuth(async (req: NextRequest) => {
@@ -81,4 +81,4 @@ export const DELETE = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

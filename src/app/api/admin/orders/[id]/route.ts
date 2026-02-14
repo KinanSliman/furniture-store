@@ -5,9 +5,9 @@ import { eq } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 
 // GET single order with full details
-export const GET = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     const order = await db.query.orders.findFirst({
       where: eq(orders.id, id),
@@ -93,12 +93,12 @@ export const GET = withAuth(async (req: NextRequest, { params }: { params: { id:
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // PATCH (update) order
-export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const PATCH = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const body = await req.json();
 
     // Check if order exists
@@ -145,4 +145,4 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { i
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

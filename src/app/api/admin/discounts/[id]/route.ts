@@ -5,9 +5,9 @@ import { eq } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 
 // GET single discount
-export const GET = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     const discount = await db.query.discountCodes.findFirst({
       where: eq(discountCodes.id, id),
@@ -29,12 +29,12 @@ export const GET = withAuth(async (req: NextRequest, { params }: { params: { id:
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // PATCH (update) discount
-export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const PATCH = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const body = await req.json();
 
     // Check if discount exists
@@ -100,12 +100,12 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { i
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // DELETE discount
-export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const DELETE = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     // Check if discount exists
     const existingDiscount = await db.query.discountCodes.findFirst({
@@ -133,4 +133,4 @@ export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { 
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

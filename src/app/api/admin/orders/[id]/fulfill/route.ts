@@ -5,9 +5,9 @@ import { eq } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 
 // POST - Create shipment and fulfill order
-export const POST = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const POST = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const body = await req.json();
 
     // Validate required fields
@@ -70,4 +70,4 @@ export const POST = withAuth(async (req: NextRequest, { params }: { params: { id
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

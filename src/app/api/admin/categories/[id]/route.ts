@@ -5,9 +5,9 @@ import { eq } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 
 // GET single category
-export const GET = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     const category = await db.query.categories.findFirst({
       where: eq(categories.id, id),
@@ -46,12 +46,12 @@ export const GET = withAuth(async (req: NextRequest, { params }: { params: { id:
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // PATCH (update) category
-export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const PATCH = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const body = await req.json();
 
     // Check if category exists
@@ -91,15 +91,40 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { i
     // Prepare update data
     const updateData: any = {};
 
+    // Legacy fields (sync with English version for backward compatibility)
     if (body.name !== undefined) updateData.name = body.name;
+    if (body.nameEn !== undefined) {
+      updateData.name = body.nameEn; // Keep legacy field in sync
+    }
     if (body.slug !== undefined) updateData.slug = body.slug;
     if (body.description !== undefined) updateData.description = body.description;
+    if (body.descriptionEn !== undefined) {
+      updateData.description = body.descriptionEn; // Keep legacy field in sync
+    }
+    if (body.metaTitle !== undefined) updateData.metaTitle = body.metaTitle;
+    if (body.metaTitleEn !== undefined) {
+      updateData.metaTitle = body.metaTitleEn; // Keep legacy field in sync
+    }
+    if (body.metaDescription !== undefined) updateData.metaDescription = body.metaDescription;
+    if (body.metaDescriptionEn !== undefined) {
+      updateData.metaDescription = body.metaDescriptionEn; // Keep legacy field in sync
+    }
+
+    // Multilingual fields
+    if (body.nameEn !== undefined) updateData.nameEn = body.nameEn;
+    if (body.nameAr !== undefined) updateData.nameAr = body.nameAr;
+    if (body.descriptionEn !== undefined) updateData.descriptionEn = body.descriptionEn;
+    if (body.descriptionAr !== undefined) updateData.descriptionAr = body.descriptionAr;
+    if (body.metaTitleEn !== undefined) updateData.metaTitleEn = body.metaTitleEn;
+    if (body.metaTitleAr !== undefined) updateData.metaTitleAr = body.metaTitleAr;
+    if (body.metaDescriptionEn !== undefined) updateData.metaDescriptionEn = body.metaDescriptionEn;
+    if (body.metaDescriptionAr !== undefined) updateData.metaDescriptionAr = body.metaDescriptionAr;
+
+    // Other fields
     if (body.imageUrl !== undefined) updateData.imageUrl = body.imageUrl;
     if (body.parentId !== undefined) updateData.parentId = body.parentId;
     if (body.displayOrder !== undefined) updateData.displayOrder = body.displayOrder;
     if (body.isActive !== undefined) updateData.isActive = body.isActive;
-    if (body.metaTitle !== undefined) updateData.metaTitle = body.metaTitle;
-    if (body.metaDescription !== undefined) updateData.metaDescription = body.metaDescription;
 
     updateData.updatedAt = new Date();
 
@@ -122,12 +147,12 @@ export const PATCH = withAuth(async (req: NextRequest, { params }: { params: { i
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // DELETE category
-export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const DELETE = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     // Check if category exists
     const existingCategory = await db.query.categories.findFirst({
@@ -166,4 +191,4 @@ export const DELETE = withAuth(async (req: NextRequest, { params }: { params: { 
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import ImageUpload from '@/components/ImageUpload';
 import VariantManager from '@/components/VariantManager';
+import MultilingualInput from '@/components/MultilingualInput';
 
 interface ImageData {
   id?: string;
@@ -37,10 +39,22 @@ export default function NewProductPage() {
   const [images, setImages] = useState<ImageData[]>([]);
   const [variants, setVariants] = useState<Variant[]>([]);
   const [formData, setFormData] = useState({
-    name: '',
+    name: '', // Legacy - will be removed eventually
     slug: '',
-    description: '',
-    shortDescription: '',
+    description: '', // Legacy
+    shortDescription: '', // Legacy
+    // Multilingual fields
+    nameEn: '',
+    nameAr: '',
+    descriptionEn: '',
+    descriptionAr: '',
+    shortDescriptionEn: '',
+    shortDescriptionAr: '',
+    metaTitleEn: '',
+    metaTitleAr: '',
+    metaDescriptionEn: '',
+    metaDescriptionAr: '',
+    // Other fields
     price: '',
     compareAtPrice: '',
     costPrice: '',
@@ -57,8 +71,6 @@ export default function NewProductPage() {
     dimensionUnit: 'cm',
     isActive: true,
     isFeatured: false,
-    metaTitle: '',
-    metaDescription: '',
     metaKeywords: '',
   });
 
@@ -74,13 +86,36 @@ export default function NewProductPage() {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
 
-    // Auto-generate slug from name
-    if (name === 'name' && !formData.slug) {
+    // Auto-generate slug from nameEn
+    if (name === 'nameEn' && !formData.slug) {
       const slug = value
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
       setFormData((prev) => ({ ...prev, slug }));
+    }
+  };
+
+  // Handler for multilingual input fields
+  const handleMultilingualChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+    // Auto-generate slug from nameEn
+    if (field === 'nameEn' && !formData.slug) {
+      const slug = value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      setFormData((prev) => ({ ...prev, slug }));
+    }
+
+    // Keep legacy fields in sync with English version for backward compatibility
+    if (field === 'nameEn') {
+      setFormData((prev) => ({ ...prev, name: value }));
+    } else if (field === 'descriptionEn') {
+      setFormData((prev) => ({ ...prev, description: value }));
+    } else if (field === 'shortDescriptionEn') {
+      setFormData((prev) => ({ ...prev, shortDescription: value }));
     }
   };
 
@@ -163,21 +198,17 @@ export default function NewProductPage() {
               <h2 className="text-lg font-semibold text-slate-900 mb-4">Basic Information</h2>
 
               <div className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
-                    Product Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Enter product name"
-                  />
-                </div>
+                <MultilingualInput
+                  label="Product Name"
+                  nameEn="nameEn"
+                  nameAr="nameAr"
+                  valueEn={formData.nameEn}
+                  valueAr={formData.nameAr}
+                  onChange={handleMultilingualChange}
+                  type="text"
+                  required={true}
+                  placeholder="Enter product name"
+                />
 
                 <div>
                   <label htmlFor="slug" className="block text-sm font-medium text-slate-700 mb-1">
@@ -195,35 +226,29 @@ export default function NewProductPage() {
                   <p className="text-xs text-slate-500 mt-1">Auto-generated from product name if left empty</p>
                 </div>
 
-                <div>
-                  <label htmlFor="shortDescription" className="block text-sm font-medium text-slate-700 mb-1">
-                    Short Description
-                  </label>
-                  <textarea
-                    id="shortDescription"
-                    name="shortDescription"
-                    value={formData.shortDescription}
-                    onChange={handleChange}
-                    rows={2}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Brief product description for listings"
-                  />
-                </div>
+                <MultilingualInput
+                  label="Short Description"
+                  nameEn="shortDescriptionEn"
+                  nameAr="shortDescriptionAr"
+                  valueEn={formData.shortDescriptionEn}
+                  valueAr={formData.shortDescriptionAr}
+                  onChange={handleMultilingualChange}
+                  type="textarea"
+                  rows={2}
+                  placeholder="Brief product description for listings"
+                />
 
-                <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-slate-700 mb-1">
-                    Full Description
-                  </label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    rows={6}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Detailed product description"
-                  />
-                </div>
+                <MultilingualInput
+                  label="Full Description"
+                  nameEn="descriptionEn"
+                  nameAr="descriptionAr"
+                  valueEn={formData.descriptionEn}
+                  valueAr={formData.descriptionAr}
+                  onChange={handleMultilingualChange}
+                  type="textarea"
+                  rows={6}
+                  placeholder="Detailed product description"
+                />
               </div>
             </div>
 
@@ -513,43 +538,28 @@ export default function NewProductPage() {
               <h2 className="text-lg font-semibold text-slate-900 mb-4">SEO</h2>
 
               <div className="space-y-4">
-                <div>
-                  <label htmlFor="metaTitle" className="block text-sm font-medium text-slate-700 mb-1">
-                    Meta Title
-                  </label>
-                  <input
-                    type="text"
-                    id="metaTitle"
-                    name="metaTitle"
-                    value={formData.metaTitle}
-                    onChange={handleChange}
-                    maxLength={60}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Product meta title for search engines"
-                  />
-                  <p className="text-xs text-slate-500 mt-1">
-                    {formData.metaTitle.length}/60 characters
-                  </p>
-                </div>
+                <MultilingualInput
+                  label="Meta Title"
+                  nameEn="metaTitleEn"
+                  nameAr="metaTitleAr"
+                  valueEn={formData.metaTitleEn}
+                  valueAr={formData.metaTitleAr}
+                  onChange={handleMultilingualChange}
+                  type="text"
+                  placeholder="Product meta title for search engines (max 60 chars)"
+                />
 
-                <div>
-                  <label htmlFor="metaDescription" className="block text-sm font-medium text-slate-700 mb-1">
-                    Meta Description
-                  </label>
-                  <textarea
-                    id="metaDescription"
-                    name="metaDescription"
-                    value={formData.metaDescription}
-                    onChange={handleChange}
-                    maxLength={160}
-                    rows={3}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    placeholder="Product meta description for search engines"
-                  />
-                  <p className="text-xs text-slate-500 mt-1">
-                    {formData.metaDescription.length}/160 characters
-                  </p>
-                </div>
+                <MultilingualInput
+                  label="Meta Description"
+                  nameEn="metaDescriptionEn"
+                  nameAr="metaDescriptionAr"
+                  valueEn={formData.metaDescriptionEn}
+                  valueAr={formData.metaDescriptionAr}
+                  onChange={handleMultilingualChange}
+                  type="textarea"
+                  rows={3}
+                  placeholder="Product meta description for search engines (max 160 chars)"
+                />
 
                 <div>
                   <label htmlFor="metaKeywords" className="block text-sm font-medium text-slate-700 mb-1">

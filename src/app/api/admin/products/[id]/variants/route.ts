@@ -5,9 +5,9 @@ import { eq, and, asc } from 'drizzle-orm';
 import { withAuth } from '@/lib/middleware';
 
 // GET - List all variants for a product
-export const GET = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const GET = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     // Check if product exists
     const product = await db.query.products.findFirst({
@@ -36,12 +36,12 @@ export const GET = withAuth(async (req: NextRequest, { params }: { params: { id:
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 // POST - Create new variant for a product
-export const POST = withAuth(async (req: NextRequest, { params }: { params: { id: string } }) => {
+export const POST = withAuth(async (req: NextRequest, context) => {
   try {
-    const { id } = params;
+    const { id } = await context.params;
     const body = await req.json();
 
     // Check if product exists
@@ -105,4 +105,4 @@ export const POST = withAuth(async (req: NextRequest, { params }: { params: { id
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

@@ -70,7 +70,7 @@ export const GET = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 export const POST = withAuth(async (req: NextRequest) => {
   try {
@@ -131,4 +131,4 @@ export const POST = withAuth(async (req: NextRequest) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });

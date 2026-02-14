@@ -98,7 +98,7 @@ export const GET = withAuth(async (req: NextRequest, context) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
 
 export const POST = withAuth(async (req: NextRequest, context) => {
   try {
@@ -129,10 +129,25 @@ export const POST = withAuth(async (req: NextRequest, context) => {
 
     // Create product
     const [newProduct] = await db.insert(products).values({
-      name: body.name,
+      // Legacy fields (for backward compatibility)
+      name: body.name || body.nameEn || '',
       slug,
-      description: body.description || null,
-      shortDescription: body.shortDescription || null,
+      description: body.description || body.descriptionEn || null,
+      shortDescription: body.shortDescription || body.shortDescriptionEn || null,
+      metaTitle: body.metaTitle || body.metaTitleEn || null,
+      metaDescription: body.metaDescription || body.metaDescriptionEn || null,
+      // Multilingual fields
+      nameEn: body.nameEn || null,
+      nameAr: body.nameAr || null,
+      descriptionEn: body.descriptionEn || null,
+      descriptionAr: body.descriptionAr || null,
+      shortDescriptionEn: body.shortDescriptionEn || null,
+      shortDescriptionAr: body.shortDescriptionAr || null,
+      metaTitleEn: body.metaTitleEn || null,
+      metaTitleAr: body.metaTitleAr || null,
+      metaDescriptionEn: body.metaDescriptionEn || null,
+      metaDescriptionAr: body.metaDescriptionAr || null,
+      // Other fields
       price: body.price.toString(),
       compareAtPrice: body.compareAtPrice ? body.compareAtPrice.toString() : null,
       costPrice: body.costPrice ? body.costPrice.toString() : null,
@@ -150,8 +165,6 @@ export const POST = withAuth(async (req: NextRequest, context) => {
       isActive: body.isActive ?? true,
       isFeatured: body.isFeatured ?? false,
       attributes: body.attributes || null,
-      metaTitle: body.metaTitle || null,
-      metaDescription: body.metaDescription || null,
       metaKeywords: body.metaKeywords || null,
     }).returning();
 
@@ -196,4 +209,4 @@ export const POST = withAuth(async (req: NextRequest, context) => {
       { status: 500 }
     );
   }
-}, 'admin');
+}, 'admin', { csrf: false });
