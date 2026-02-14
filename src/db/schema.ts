@@ -665,6 +665,13 @@ export const productsRelations = relations(products, ({ many }) => ({
   reviews: many(productReviews),
 }));
 
+export const productImagesRelations = relations(productImages, ({ one }) => ({
+  product: one(products, {
+    fields: [productImages.productId],
+    references: [products.id],
+  }),
+}));
+
 export const productVariantsRelations = relations(productVariants, ({ one }) => ({
   product: one(products, {
     fields: [productVariants.productId],
@@ -680,4 +687,79 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
   items: many(orderItems),
   statusHistory: many(orderStatusHistory),
   shipments: many(shipments),
+}));
+
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+  product: one(products, {
+    fields: [orderItems.productId],
+    references: [products.id],
+  }),
+  variant: one(productVariants, {
+    fields: [orderItems.variantId],
+    references: [productVariants.id],
+  }),
+}));
+
+export const orderStatusHistoryRelations = relations(orderStatusHistory, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderStatusHistory.orderId],
+    references: [orders.id],
+  }),
+  createdByUser: one(users, {
+    fields: [orderStatusHistory.createdBy],
+    references: [users.id],
+  }),
+}));
+
+export const shipmentsRelations = relations(shipments, ({ one }) => ({
+  order: one(orders, {
+    fields: [shipments.orderId],
+    references: [orders.id],
+  }),
+}));
+
+export const productReviewsRelations = relations(productReviews, ({ one }) => ({
+  product: one(products, {
+    fields: [productReviews.productId],
+    references: [products.id],
+  }),
+  user: one(users, {
+    fields: [productReviews.userId],
+    references: [users.id],
+  }),
+  order: one(orders, {
+    fields: [productReviews.orderId],
+    references: [orders.id],
+  }),
+}));
+
+export const productCategoriesRelations = relations(productCategories, ({ one }) => ({
+  product: one(products, {
+    fields: [productCategories.productId],
+    references: [products.id],
+  }),
+  category: one(categories, {
+    fields: [productCategories.categoryId],
+    references: [categories.id],
+  }),
+}));
+
+export const productTagsRelations = relations(productTags, ({ one }) => ({
+  product: one(products, {
+    fields: [productTags.productId],
+    references: [products.id],
+  }),
+  tag: one(tags, {
+    fields: [productTags.tagId],
+    references: [tags.id],
+  }),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  orders: many(orders),
+  reviews: many(productReviews),
 }));
