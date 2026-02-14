@@ -85,7 +85,7 @@ export default function AdminLoginPage() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
-                placeholder="admin@example.com"
+                placeholder="your-email@example.com"
                 disabled={isLoading}
               />
             </div>
@@ -138,10 +138,15 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        {/* Help Text */}
-        <p className="text-center text-sm text-white/40 mt-6">
-          Default credentials: admin@example.com / admin123
-        </p>
+        {/* Security Notice */}
+        <div className="text-center text-xs text-white/40 mt-6 space-y-1">
+          <p className="flex items-center justify-center gap-2">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+            </svg>
+            Secure Admin Access
+          </p>
+        </div>
       </div>
     </div>
   );

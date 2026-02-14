@@ -6,7 +6,8 @@
       "Bash(findstr:*)",
       "Bash(pnpm run dev)",
       "Bash(npm run db:seed:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(pnpm add:*)"
     ]
   }
 }

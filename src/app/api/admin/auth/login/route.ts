@@ -4,6 +4,7 @@ import { Pool } from "pg";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { verifyPassword, generateToken } from "@/lib/auth";
+import { strictRateLimit, addRateLimitHeaders } from "@/lib/rate-limit";
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -13,6 +14,12 @@ const loginSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    // Apply strict rate limiting (5 attempts per 15 minutes)
+    const rateLimitResult = await strictRateLimit(req);
+    if (rateLimitResult) {
+      return rateLimitResult;
+    }
+
     const body = await req.json();
 
     // Validate input
@@ -116,7 +123,11 @@ export async function POST(req: NextRequest) {
       path: "/",
     });
 
-    return response;
+    // Add rate limit headers
+    return addRateLimitHeaders(response, req, {
+      maxRequests: parseInt(process.env.LOGIN_RATE_LIMIT_MAX_REQUESTS || '5'),
+      windowMs: parseInt(process.env.LOGIN_RATE_LIMIT_WINDOW_MS || '900000'),
+    });
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(

@@ -1,12 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
+import { rateLimit, addRateLimitHeaders } from '@/lib/rate-limit';
 
 export function withAuth(
   handler: (req: NextRequest, context: { userId: string; role: string }) => Promise<NextResponse>,
-  requiredRole?: 'admin' | 'super_admin'
+  requiredRole?: 'admin' | 'super_admin',
+  options?: {
+    rateLimit?: boolean; // Enable rate limiting (default: true)
+    maxRequests?: number;
+    windowMs?: number;
+  }
 ) {
   return async (req: NextRequest) => {
     try {
+      // Apply rate limiting (enabled by default)
+      const rateLimitEnabled = options?.rateLimit !== false;
+      if (rateLimitEnabled) {
+        const rateLimitResult = await rateLimit(req, {
+          maxRequests: options?.maxRequests,
+          windowMs: options?.windowMs,
+        });
+        if (rateLimitResult) {
+          return rateLimitResult;
+        }
+      }
+
       // Get token from cookie or Authorization header
       const token = req.cookies.get('auth-token')?.value || 
                    req.headers.get('Authorization')?.replace('Bearer ', '');
@@ -46,7 +64,17 @@ export function withAuth(
       }
 
       // Call the handler with user context
-      return handler(req, { userId: payload.userId, role: payload.role });
+      const response = await handler(req, { userId: payload.userId, role: payload.role });
+
+      // Add rate limit headers to response
+      if (rateLimitEnabled) {
+        return addRateLimitHeaders(response, req, {
+          maxRequests: options?.maxRequests,
+          windowMs: options?.windowMs,
+        });
+      }
+
+      return response;
       
     } catch (error) {
       console.error('Auth middleware error:', error);
