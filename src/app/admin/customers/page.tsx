@@ -242,9 +242,9 @@ export default function CustomersListPage() {
                           <div className="flex items-center gap-2 text-sm text-slate-600">
                             <Mail size={14} className="text-slate-400" />
                             {customer.emailVerified ? (
-                              <CheckCircle size={14} className="text-green-600" title="Verified" />
+                              <CheckCircle size={14} className="text-green-600" aria-label="Verified" />
                             ) : (
-                              <XCircle size={14} className="text-slate-400" title="Not verified" />
+                              <XCircle size={14} className="text-slate-400" aria-label="Not verified" />
                             )}
                           </div>
                           {customer.phone && (

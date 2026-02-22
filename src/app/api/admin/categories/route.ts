@@ -51,7 +51,7 @@ export const GET = withAuth(async (req: NextRequest) => {
     // Query categories
     const categoriesList = await db.query.categories.findMany({
       where: conditions.length > 0 ? and(...conditions) : undefined,
-      orderBy: orderFn(sortColumn),
+      orderBy: orderFn(sortColumn as any),
       limit,
       offset,
       with: {

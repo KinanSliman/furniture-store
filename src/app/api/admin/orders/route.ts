@@ -57,7 +57,7 @@ export const GET = withAuth(async (req: NextRequest) => {
     // Query orders with user info
     const ordersList = await db.query.orders.findMany({
       where: conditions.length > 0 ? and(...conditions) : undefined,
-      orderBy: orderFn(sortColumn),
+      orderBy: orderFn(sortColumn as any),
       limit,
       offset,
       with: {

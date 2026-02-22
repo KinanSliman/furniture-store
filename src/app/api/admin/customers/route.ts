@@ -71,7 +71,7 @@ export const GET = withAuth(async (req: NextRequest) => {
       })
       .from(users)
       .where(and(...conditions))
-      .orderBy(orderFn(sortColumn))
+      .orderBy(orderFn(sortColumn as any))
       .limit(limit)
       .offset(offset);
 

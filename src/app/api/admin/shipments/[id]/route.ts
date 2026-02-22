@@ -56,7 +56,7 @@ export const PATCH = withAuth(async (req: NextRequest, context) => {
     if (body.trackingNumber !== undefined) updateData.trackingNumber = body.trackingNumber || null;
     if (body.trackingUrl !== undefined) updateData.trackingUrl = body.trackingUrl || null;
     if (body.shippedAt !== undefined) updateData.shippedAt = body.shippedAt ? new Date(body.shippedAt) : null;
-    if (body.estimatedDelivery !== undefined) updateData.estimatedDelivery = body.estimatedDelivery ? new Date(body.estimatedDelivery) : null;
+    if (body.estimatedDelivery !== undefined) updateData.estimatedDeliveryAt = body.estimatedDelivery ? new Date(body.estimatedDelivery) : null;
     if (body.deliveredAt !== undefined) {
       updateData.deliveredAt = body.deliveredAt ? new Date(body.deliveredAt) : null;
 
@@ -73,7 +73,7 @@ export const PATCH = withAuth(async (req: NextRequest, context) => {
         await db.insert(orderStatusHistory).values({
           orderId: existingShipment.orderId,
           status: 'delivered',
-          notes: body.notes || 'Order delivered',
+          note: body.notes || 'Order delivered',
         });
       }
     }

@@ -2,13 +2,14 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 // Validate JWT_SECRET exists and is strong enough
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
+if (!process.env.JWT_SECRET) {
   throw new Error(
     'JWT_SECRET environment variable is required. ' +
     'Generate a secure secret with: openssl rand -base64 32'
   );
 }
+
+const JWT_SECRET: string = process.env.JWT_SECRET;
 
 // Warn if JWT_SECRET is weak (less than 32 characters)
 if (JWT_SECRET.length < 32) {
@@ -38,13 +39,13 @@ export interface JWTPayload {
 
 export function generateToken(payload: JWTPayload): string {
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: process.env.SESSION_EXPIRY || '7d',
+    expiresIn: (process.env.SESSION_EXPIRY || '7d') as any,
   });
 }
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload;
+    return jwt.verify(token, JWT_SECRET) as unknown as JWTPayload;
   } catch (error) {
     return null;
   }

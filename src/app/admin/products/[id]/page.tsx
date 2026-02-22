@@ -448,7 +448,7 @@ export default function EditProductPage() {
                       type="number"
                       id="compareAtPrice"
                       name="compareAtPrice"
-                      value={formData.compareAtPrice}
+                      value={formData.compareAtPrice ?? ''}
                       onChange={handleChange}
                       step="0.01"
                       min="0"
@@ -468,7 +468,7 @@ export default function EditProductPage() {
                       type="number"
                       id="costPrice"
                       name="costPrice"
-                      value={formData.costPrice}
+                      value={formData.costPrice ?? ''}
                       onChange={handleChange}
                       step="0.01"
                       min="0"
@@ -494,7 +494,7 @@ export default function EditProductPage() {
                       type="text"
                       id="sku"
                       name="sku"
-                      value={formData.sku}
+                      value={formData.sku ?? ''}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       placeholder="PROD-001"
@@ -509,7 +509,7 @@ export default function EditProductPage() {
                       type="text"
                       id="barcode"
                       name="barcode"
-                      value={formData.barcode}
+                      value={formData.barcode ?? ''}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       placeholder="123456789012"
@@ -593,7 +593,7 @@ export default function EditProductPage() {
                       type="number"
                       id="weight"
                       name="weight"
-                      value={formData.weight}
+                      value={formData.weight ?? ''}
                       onChange={handleChange}
                       step="0.01"
                       min="0"
@@ -630,7 +630,7 @@ export default function EditProductPage() {
                       type="number"
                       id="length"
                       name="length"
-                      value={formData.length}
+                      value={formData.length ?? ''}
                       onChange={handleChange}
                       step="0.01"
                       min="0"
@@ -647,7 +647,7 @@ export default function EditProductPage() {
                       type="number"
                       id="width"
                       name="width"
-                      value={formData.width}
+                      value={formData.width ?? ''}
                       onChange={handleChange}
                       step="0.01"
                       min="0"
@@ -664,7 +664,7 @@ export default function EditProductPage() {
                       type="number"
                       id="height"
                       name="height"
-                      value={formData.height}
+                      value={formData.height ?? ''}
                       onChange={handleChange}
                       step="0.01"
                       min="0"
@@ -730,7 +730,7 @@ export default function EditProductPage() {
                     type="text"
                     id="metaKeywords"
                     name="metaKeywords"
-                    value={formData.metaKeywords}
+                    value={formData.metaKeywords ?? ''}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     placeholder="keyword1, keyword2, keyword3"

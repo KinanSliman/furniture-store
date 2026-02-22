@@ -22,9 +22,9 @@ export const POST = withAuth(async (req: NextRequest, context) => {
     if (!file) {
       await auditLog(req, {
         userId: context.userId,
-        action: 'import_products',
-        resource: 'products',
-        status: 'failed',
+        action: 'import',
+        resource: 'product',
+        status: 'failure',
         errorMessage: 'No file provided',
       });
 
@@ -37,9 +37,9 @@ export const POST = withAuth(async (req: NextRequest, context) => {
     if (!file.name.endsWith('.csv')) {
       await auditLog(req, {
         userId: context.userId,
-        action: 'import_products',
-        resource: 'products',
-        status: 'failed',
+        action: 'import',
+        resource: 'product',
+        status: 'failure',
         errorMessage: 'Invalid file type (must be CSV)',
       });
 
@@ -54,9 +54,9 @@ export const POST = withAuth(async (req: NextRequest, context) => {
     if (file.size > maxSize) {
       await auditLog(req, {
         userId: context.userId,
-        action: 'import_products',
-        resource: 'products',
-        status: 'failed',
+        action: 'import',
+        resource: 'product',
+        status: 'failure',
         errorMessage: 'File too large (max 10MB)',
       });
 
@@ -241,8 +241,8 @@ export const POST = withAuth(async (req: NextRequest, context) => {
     // Log import completion
     await auditLog(req, {
       userId: context.userId,
-      action: 'import_products',
-      resource: 'products',
+      action: 'import',
+      resource: 'product',
       status: 'success',
       metadata: {
         created: results.created,
@@ -269,9 +269,9 @@ export const POST = withAuth(async (req: NextRequest, context) => {
 
     await auditLog(req, {
       userId: context.userId,
-      action: 'import_products',
-      resource: 'products',
-      status: 'failed',
+      action: 'import',
+      resource: 'product',
+      status: 'failure',
       errorMessage: error.message,
     });
 

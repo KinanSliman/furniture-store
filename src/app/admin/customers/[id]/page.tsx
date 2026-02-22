@@ -246,9 +246,9 @@ export default function CustomerDetailPage() {
                     {customer.email}
                   </a>
                   {customer.emailVerified ? (
-                    <CheckCircle size={16} className="text-green-600" title="Verified" />
+                    <CheckCircle size={16} className="text-green-600" aria-label="Verified" />
                   ) : (
-                    <XCircle size={16} className="text-slate-400" title="Not verified" />
+                    <XCircle size={16} className="text-slate-400" aria-label="Not verified" />
                   )}
                 </div>
               </div>

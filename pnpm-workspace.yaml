@@ -3,6 +3,8 @@ ignoredBuiltDependencies:
   - unrs-resolver
 
 onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
   - bcrypt
   - es5-ext
   - esbuild

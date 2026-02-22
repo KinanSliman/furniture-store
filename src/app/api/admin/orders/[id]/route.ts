@@ -41,7 +41,7 @@ export const GET = withAuth(async (req: NextRequest, context) => {
         statusHistory: {
           orderBy: (history, { desc }) => [desc(history.createdAt)],
           with: {
-            createdBy: {
+            createdByUser: {
               columns: {
                 id: true,
                 email: true,

@@ -42,7 +42,7 @@ export const GET = withAuth(async (req: NextRequest) => {
     // Get products with inventory tracking
     const productsList = await db.query.products.findMany({
       where: whereCondition,
-      orderBy: orderFn(sortColumn),
+      orderBy: orderFn(sortColumn as any),
       limit,
       offset,
       with: {

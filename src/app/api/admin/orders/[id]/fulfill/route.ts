@@ -37,7 +37,7 @@ export const POST = withAuth(async (req: NextRequest, context) => {
       trackingNumber: body.trackingNumber || null,
       trackingUrl: body.trackingUrl || null,
       shippedAt: body.shippedAt ? new Date(body.shippedAt) : new Date(),
-      estimatedDelivery: body.estimatedDelivery ? new Date(body.estimatedDelivery) : null,
+      estimatedDeliveryAt: body.estimatedDelivery ? new Date(body.estimatedDelivery) : null,
       notes: body.notes || null,
     }).returning();
 
@@ -54,7 +54,7 @@ export const POST = withAuth(async (req: NextRequest, context) => {
       await db.insert(orderStatusHistory).values({
         orderId: id,
         status: 'shipped',
-        notes: body.notes || 'Order fulfilled and shipped',
+        note: body.notes || 'Order fulfilled and shipped',
       });
     }
 

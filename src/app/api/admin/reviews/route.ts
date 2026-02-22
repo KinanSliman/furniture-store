@@ -44,7 +44,7 @@ export const GET = withAuth(async (req: NextRequest) => {
     // Query reviews with product and user info
     const reviewsList = await db.query.productReviews.findMany({
       where: conditions.length > 0 ? and(...conditions) : undefined,
-      orderBy: orderFn(sortColumn),
+      orderBy: orderFn(sortColumn as any),
       limit,
       offset,
       with: {
