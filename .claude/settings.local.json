@@ -19,7 +19,13 @@
       "Bash(python3:*)",
       "Bash(pkill:*)",
       "Bash(npx kill-port:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(Select-String -Path \"C:\\\\Users\\\\Kin\\\\Desktop\\\\stores collection\\\\furniture store\\\\node_modules\\\\.pnpm\\\\drizzle-kit@0.31.9\\\\node_modules\\\\drizzle-kit\\\\bin.cjs\" -Pattern \"neon-http\" -Context 2)",
+      "Bash(Select-Object -First 30)",
+      "Bash(node:*)",
+      "Bash(pnpm db:generate:*)",
+      "Bash(pnpm db:migrate:*)",
+      "Bash(pnpm db:seed:*)"
     ]
   }
 }

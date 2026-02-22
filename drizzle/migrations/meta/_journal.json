@@ -15,6 +15,13 @@
       "when": 1770909818060,
       "tag": "0001_rich_ego",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771760255344,
+      "tag": "0002_rich_mesmero",
+      "breakpoints": true
     }
   ]
 }
