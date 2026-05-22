@@ -62,6 +62,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (mounted) saveCart(items);
   }, [items, mounted]);
 
+  // Lock body scroll while cart drawer is open
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.body.style.overflow = drawerOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [drawerOpen]);
+
   const addItem = useCallback((item: Omit<CartItem, 'quantity'> & { quantity?: number }) => {
     setItems(prev => {
       const existing = prev.find(i => i.id === item.id);
@@ -103,12 +110,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       {/* Drawer */}
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-2xl transform transition-transform duration-300 flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] max-w-full bg-white z-50 shadow-2xl transform transition-transform duration-300 flex flex-col ${
           drawerOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-stone-100">
           <div className="flex items-center gap-3">
             <ShoppingBag className="w-5 h-5 text-stone-700" />
             <h2 className="font-medium text-stone-900">
@@ -124,7 +131,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Items */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <ShoppingBag className="w-12 h-12 text-stone-200 mb-4" />
@@ -200,7 +207,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="px-6 py-5 border-t border-stone-100 space-y-4">
+          <div className="px-4 sm:px-6 py-4 sm:py-5 border-t border-stone-100 space-y-3 sm:space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-sm text-stone-500">Subtotal</span>
               <span className="font-medium text-stone-900">

@@ -174,21 +174,21 @@ function ShopContent() {
   const pageTitle = currentCategory ? (currentCategory.nameEn || currentCategory.name) : search ? `Search: "${search}"` : 'All Products';
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
       {/* Breadcrumb + Title */}
-      <div className="mb-8">
-        <nav className="text-xs text-stone-400 mb-3 flex items-center gap-2">
+      <div className="mb-6 sm:mb-8">
+        <nav className="text-xs text-stone-400 mb-2 sm:mb-3 flex items-center gap-2 flex-wrap">
           <Link href="/" className="hover:text-stone-600 transition-colors">Home</Link>
           <span>/</span>
-          <span className="text-stone-600">{pageTitle}</span>
+          <span className="text-stone-600 truncate max-w-[60vw]">{pageTitle}</span>
         </nav>
-        <div className="flex items-end justify-between">
-          <h1 className="text-3xl font-light text-stone-900">{pageTitle}</h1>
-          <p className="text-sm text-stone-400 hidden md:block">{total} {total === 1 ? 'piece' : 'pieces'}</p>
+        <div className="flex items-end justify-between gap-3">
+          <h1 className="text-2xl sm:text-3xl font-light text-stone-900 break-words">{pageTitle}</h1>
+          <p className="text-xs sm:text-sm text-stone-400 flex-shrink-0">{total} {total === 1 ? 'piece' : 'pieces'}</p>
         </div>
       </div>
 
-      <div className="flex gap-8">
+      <div className="flex gap-6 lg:gap-8">
         {/* Sidebar Filters - desktop */}
         <aside className="hidden lg:block w-56 flex-shrink-0">
           <div className="sticky top-28 space-y-8">
@@ -263,12 +263,12 @@ function ShopContent() {
         {/* Main */}
         <div className="flex-1 min-w-0">
           {/* Toolbar */}
-          <div className="flex items-center justify-between mb-6 gap-4">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between mb-5 sm:mb-6 gap-2 sm:gap-4 flex-wrap">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap min-w-0">
               {/* Mobile filter button */}
               <button
                 onClick={() => setFilterOpen(true)}
-                className="lg:hidden flex items-center gap-2 border border-stone-200 px-3 py-2 text-sm text-stone-600 hover:border-stone-400 transition-colors"
+                className="lg:hidden flex items-center gap-2 border border-stone-200 px-3 py-2 text-sm text-stone-600 hover:border-stone-400 transition-colors flex-shrink-0"
               >
                 <SlidersHorizontal className="w-4 h-4" />
                 Filter
@@ -276,17 +276,17 @@ function ShopContent() {
 
               {/* Active filters */}
               {category && (
-                <div className="flex items-center gap-1 bg-stone-100 px-3 py-1.5 text-xs text-stone-700">
-                  {currentCategory?.nameEn || currentCategory?.name || category}
-                  <button onClick={() => updateParam('category', null)} className="ml-1 text-stone-400 hover:text-stone-700">
+                <div className="flex items-center gap-1 bg-stone-100 px-3 py-1.5 text-xs text-stone-700 max-w-[180px]">
+                  <span className="truncate">{currentCategory?.nameEn || currentCategory?.name || category}</span>
+                  <button onClick={() => updateParam('category', null)} className="ml-1 text-stone-400 hover:text-stone-700 flex-shrink-0">
                     <X className="w-3 h-3" />
                   </button>
                 </div>
               )}
               {search && (
-                <div className="flex items-center gap-1 bg-stone-100 px-3 py-1.5 text-xs text-stone-700">
-                  "{search}"
-                  <button onClick={() => updateParam('search', null)} className="ml-1 text-stone-400 hover:text-stone-700">
+                <div className="flex items-center gap-1 bg-stone-100 px-3 py-1.5 text-xs text-stone-700 max-w-[180px]">
+                  <span className="truncate">"{search}"</span>
+                  <button onClick={() => updateParam('search', null)} className="ml-1 text-stone-400 hover:text-stone-700 flex-shrink-0">
                     <X className="w-3 h-3" />
                   </button>
                 </div>
@@ -294,11 +294,11 @@ function ShopContent() {
             </div>
 
             {/* Sort */}
-            <div className="relative">
+            <div className="relative ms-auto">
               <select
                 value={sort}
                 onChange={(e) => updateParam('sort', e.target.value)}
-                className="appearance-none border border-stone-200 text-sm text-stone-600 px-4 py-2 pr-8 focus:outline-none focus:border-stone-400 bg-white cursor-pointer"
+                className="appearance-none border border-stone-200 text-sm text-stone-600 px-3 sm:px-4 py-2 pr-8 focus:outline-none focus:border-stone-400 bg-white cursor-pointer"
               >
                 {SORT_OPTIONS.map(o => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -310,7 +310,7 @@ function ShopContent() {
 
           {/* Grid */}
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-3 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:gap-6">
               {Array(12).fill(0).map((_, i) => (
                 <div key={i}>
                   <div className="aspect-[4/5] bg-stone-100 animate-pulse rounded-sm mb-3" />
@@ -320,7 +320,7 @@ function ShopContent() {
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="flex flex-col items-center justify-center py-16 sm:py-24 text-center">
               <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mb-4">
                 <Filter className="w-6 h-6 text-stone-300" />
               </div>
@@ -332,7 +332,7 @@ function ShopContent() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-3 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:gap-6">
                 {products.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -340,32 +340,38 @@ function ShopContent() {
 
               {/* Pagination */}
               {pages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-12">
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2 mt-10 sm:mt-12 flex-wrap">
                   {page > 1 && (
                     <button
                       onClick={() => updateParam('page', String(page - 1))}
-                      className="px-4 py-2 border border-stone-200 text-sm text-stone-600 hover:border-stone-400 transition-colors"
+                      className="px-3 sm:px-4 py-2 border border-stone-200 text-sm text-stone-600 hover:border-stone-400 transition-colors"
                     >
                       Previous
                     </button>
                   )}
-                  {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
-                    <button
-                      key={p}
-                      onClick={() => updateParam('page', String(p))}
-                      className={`w-10 h-10 text-sm transition-colors ${
-                        p === page
-                          ? 'bg-stone-900 text-white'
-                          : 'border border-stone-200 text-stone-600 hover:border-stone-400'
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
+                  {Array.from({ length: pages }, (_, i) => i + 1)
+                    .filter((p) => Math.abs(p - page) <= 2 || p === 1 || p === pages)
+                    .map((p, idx, arr) => (
+                      <span key={p} className="flex items-center gap-1.5 sm:gap-2">
+                        {idx > 0 && p - arr[idx - 1] > 1 && (
+                          <span className="text-stone-300 text-sm px-1">…</span>
+                        )}
+                        <button
+                          onClick={() => updateParam('page', String(p))}
+                          className={`w-9 h-9 sm:w-10 sm:h-10 text-sm transition-colors ${
+                            p === page
+                              ? 'bg-stone-900 text-white'
+                              : 'border border-stone-200 text-stone-600 hover:border-stone-400'
+                          }`}
+                        >
+                          {p}
+                        </button>
+                      </span>
+                    ))}
                   {page < pages && (
                     <button
                       onClick={() => updateParam('page', String(page + 1))}
-                      className="px-4 py-2 border border-stone-200 text-sm text-stone-600 hover:border-stone-400 transition-colors"
+                      className="px-3 sm:px-4 py-2 border border-stone-200 text-sm text-stone-600 hover:border-stone-400 transition-colors"
                     >
                       Next
                     </button>
@@ -381,10 +387,10 @@ function ShopContent() {
       {filterOpen && (
         <>
           <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setFilterOpen(false)} />
-          <div className="fixed bottom-0 left-0 right-0 bg-white z-50 rounded-t-2xl p-6 max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
+          <div className="fixed bottom-0 left-0 right-0 bg-white z-50 rounded-t-2xl p-5 sm:p-6 max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-5 sm:mb-6">
               <h3 className="font-medium text-stone-900">Filter</h3>
-              <button onClick={() => setFilterOpen(false)}>
+              <button onClick={() => setFilterOpen(false)} aria-label="Close filters" className="p-1">
                 <X className="w-5 h-5 text-stone-500" />
               </button>
             </div>
@@ -410,6 +416,45 @@ function ShopContent() {
                       {cat.nameEn || cat.name}
                     </button>
                   ))}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-xs font-semibold tracking-widest uppercase text-stone-500 mb-3">Price Range</h4>
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    placeholder="Min"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(e.target.value)}
+                    className="w-full border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-700"
+                  />
+                  <span className="text-stone-300 flex-shrink-0">–</span>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    placeholder="Max"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                    className="w-full border border-stone-200 px-3 py-2 text-sm focus:outline-none focus:border-stone-400 text-stone-700"
+                  />
+                </div>
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={() => { fetchProducts(); setFilterOpen(false); }}
+                    className="flex-1 bg-stone-900 text-white text-sm py-2.5 hover:bg-stone-800 transition-colors"
+                  >
+                    Apply
+                  </button>
+                  {(minPrice || maxPrice) && (
+                    <button
+                      onClick={() => { setMinPrice(''); setMaxPrice(''); }}
+                      className="px-4 text-sm text-stone-500 hover:text-stone-800 border border-stone-200 transition-colors"
+                    >
+                      Clear
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

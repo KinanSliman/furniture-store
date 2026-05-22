@@ -27,6 +27,12 @@ function StoreHeader() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Lock body scroll while mobile drawer is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -41,19 +47,36 @@ function StoreHeader() {
           scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white'
         }`}
       >
-        {/* Promo bar */}
-        <div className="bg-stone-900 text-stone-100 text-center py-2 text-xs tracking-widest uppercase">
-          Free white-glove delivery on orders over $1,000&nbsp;·&nbsp;Use code <span className="font-semibold text-amber-400">WELCOME10</span> for 10% off
+        {/* Promo bar - shorter copy on phones */}
+        <div className="bg-stone-900 text-stone-100 text-center py-1.5 sm:py-2 text-[10px] sm:text-xs tracking-widest uppercase px-3">
+          <span className="hidden sm:inline">
+            Free white-glove delivery on orders over $1,000&nbsp;·&nbsp;Use code <span className="font-semibold text-amber-400">WELCOME10</span> for 10% off
+          </span>
+          <span className="sm:hidden">
+            Code <span className="font-semibold text-amber-400">WELCOME10</span> · 10% off
+          </span>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 bg-stone-900 rounded-sm flex items-center justify-center">
-                <span className="text-amber-400 font-bold text-sm">L</span>
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            {/* Mobile menu button (left on small) */}
+            <button
+              className="lg:hidden -ml-2 p-2 text-stone-700 hover:text-stone-900"
+              onClick={() => setMobileOpen(true)}
+              aria-label="Open menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            {/* Logo - centered on mobile, left on desktop */}
+            <Link
+              href="/"
+              className="flex items-center gap-2 group lg:flex-none absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0"
+            >
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-stone-900 rounded-sm flex items-center justify-center">
+                <span className="text-amber-400 font-bold text-xs sm:text-sm">L</span>
               </div>
-              <span className="text-xl font-light tracking-[0.15em] text-stone-900 group-hover:text-stone-600 transition-colors">
+              <span className="text-base sm:text-xl font-light tracking-[0.15em] text-stone-900 group-hover:text-stone-600 transition-colors">
                 LUMINA
               </span>
             </Link>
@@ -73,7 +96,7 @@ function StoreHeader() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 -mr-2 sm:mr-0">
               {searchOpen ? (
                 <form onSubmit={handleSearch} className="flex items-center gap-2">
                   <input
@@ -82,16 +105,16 @@ function StoreHeader() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search furniture..."
-                    className="border-b border-stone-300 focus:border-stone-900 outline-none text-sm py-1 px-1 w-44 transition-colors"
+                    className="border-b border-stone-300 focus:border-stone-900 outline-none text-sm py-1 px-1 w-32 sm:w-44 transition-colors"
                   />
-                  <button type="button" onClick={() => { setSearchOpen(false); setSearchQuery(''); }}>
+                  <button type="button" onClick={() => { setSearchOpen(false); setSearchQuery(''); }} aria-label="Close search">
                     <X className="w-4 h-4 text-stone-400" />
                   </button>
                 </form>
               ) : (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="p-2 text-stone-500 hover:text-stone-900 transition-colors"
+                  className="hidden sm:inline-flex p-2 text-stone-500 hover:text-stone-900 transition-colors"
                   aria-label="Search"
                 >
                   <Search className="w-5 h-5" />
@@ -105,41 +128,78 @@ function StoreHeader() {
               >
                 <ShoppingCart className="w-5 h-5" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-stone-900 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                  <span className="absolute top-0 right-0 w-4 h-4 bg-stone-900 text-white text-[10px] rounded-full flex items-center justify-center font-medium">
                     {itemCount > 9 ? '9+' : itemCount}
                   </span>
                 )}
               </button>
-
-              <button
-                className="lg:hidden p-2 text-stone-500 hover:text-stone-900"
-                onClick={() => setMobileOpen(!mobileOpen)}
-                aria-label="Menu"
-              >
-                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
             </div>
           </div>
         </div>
-
-        {/* Mobile Nav */}
-        {mobileOpen && (
-          <div className="lg:hidden bg-white border-t border-stone-100">
-            <nav className="px-4 py-4 flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-stone-700 hover:text-stone-900 text-sm tracking-wide py-1"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        )}
       </header>
+
+      {/* Mobile drawer (slide in from left) */}
+      <div
+        className={`lg:hidden fixed inset-0 z-[60] transition-opacity ${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        aria-hidden={!mobileOpen}
+      >
+        <div
+          className="absolute inset-0 bg-black/50"
+          onClick={() => setMobileOpen(false)}
+        />
+        <aside
+          className={`absolute top-0 left-0 h-full w-[85%] max-w-sm bg-white shadow-xl flex flex-col transform transition-transform duration-300 ${
+            mobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="flex items-center justify-between h-14 px-5 border-b border-stone-100">
+            <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-stone-900 rounded-sm flex items-center justify-center">
+                <span className="text-amber-400 font-bold text-xs">L</span>
+              </div>
+              <span className="text-base font-light tracking-[0.15em] text-stone-900">LUMINA</span>
+            </Link>
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="p-2 -mr-2 text-stone-500 hover:text-stone-900"
+              aria-label="Close menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Mobile search */}
+          <form onSubmit={handleSearch} className="px-5 py-4 border-b border-stone-100">
+            <div className="flex items-center gap-2 border border-stone-200 rounded-sm px-3 py-2 focus-within:border-stone-400">
+              <Search className="w-4 h-4 text-stone-400 flex-shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search furniture..."
+                className="flex-1 outline-none text-sm bg-transparent"
+              />
+            </div>
+          </form>
+
+          <nav className="flex-1 overflow-y-auto px-2 py-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block px-3 py-3 text-stone-700 hover:bg-stone-50 hover:text-stone-900 text-sm tracking-wide rounded-sm"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="border-t border-stone-100 px-5 py-4 text-xs text-stone-400">
+            Free delivery over $1,000
+          </div>
+        </aside>
+      </div>
 
       <CartDrawer />
     </>
@@ -149,9 +209,9 @@ function StoreHeader() {
 function StoreFooter() {
   return (
     <footer className="bg-stone-900 text-stone-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          <div className="md:col-span-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 md:gap-12">
+          <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-amber-400 rounded-sm flex items-center justify-center">
                 <span className="text-stone-900 font-bold text-sm">L</span>
@@ -230,7 +290,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
   return (
     <CartProvider>
       <StoreHeader />
-      <main className="pt-[88px] min-h-screen bg-white">
+      <main className="pt-[82px] sm:pt-[96px] min-h-screen bg-white">
         {children}
       </main>
       <StoreFooter />

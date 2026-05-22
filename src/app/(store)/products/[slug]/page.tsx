@@ -171,25 +171,25 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
   const attributes = product.attributes as Record<string, unknown> | null;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
       {/* Breadcrumb */}
-      <nav className="text-xs text-stone-400 mb-8 flex items-center gap-2">
+      <nav className="text-xs text-stone-400 mb-6 sm:mb-8 flex items-center gap-1.5 sm:gap-2 flex-wrap">
         <Link href="/" className="hover:text-stone-600 transition-colors">Home</Link>
         <span>/</span>
         <Link href="/shop" className="hover:text-stone-600 transition-colors">Shop</Link>
         {product.categories[0] && (
           <>
             <span>/</span>
-            <Link href={`/shop?category=${product.categories[0].slug}`} className="hover:text-stone-600 transition-colors">
+            <Link href={`/shop?category=${product.categories[0].slug}`} className="hover:text-stone-600 transition-colors hidden sm:inline">
               {product.categories[0].nameEn || product.categories[0].name}
             </Link>
+            <span className="hidden sm:inline">/</span>
           </>
         )}
-        <span>/</span>
-        <span className="text-stone-600">{product.nameEn || product.name}</span>
+        <span className="text-stone-600 truncate max-w-[60vw]">{product.nameEn || product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 xl:gap-20">
         {/* Images */}
         <div className="space-y-4">
           {/* Main image */}
@@ -214,7 +214,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
           {/* Thumbnails */}
           {product.images.length > 1 && (
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 sm:gap-3">
               {product.images.map((img, i) => (
                 <button
                   key={img.id}
@@ -258,12 +258,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           )}
 
           {/* Price */}
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-3xl font-light text-stone-900">
+          <div className="flex items-baseline flex-wrap gap-3 mb-5 sm:mb-6">
+            <span className="text-2xl sm:text-3xl font-light text-stone-900">
               ${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </span>
             {compareAt && (
-              <span className="text-stone-400 text-lg line-through font-light">
+              <span className="text-stone-400 text-base sm:text-lg line-through font-light">
                 ${compareAt.toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </span>
             )}
@@ -328,7 +328,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           )}
 
           {/* Delivery badges */}
-          <div className="grid grid-cols-2 gap-3 mb-8 py-6 border-y border-stone-100">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8 py-5 sm:py-6 border-y border-stone-100">
             {[
               { icon: <Truck className="w-4 h-4" />, title: 'Free Delivery', sub: 'On orders over $1,000' },
               { icon: <Shield className="w-4 h-4" />, title: '10-Year Warranty', sub: 'Solid wood pieces' },
@@ -336,7 +336,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               { icon: <Package className="w-4 h-4" />, title: 'Expert Assembly', sub: 'White glove service' },
             ].map((b) => (
               <div key={b.title} className="flex items-start gap-3">
-                <div className="text-stone-400 mt-0.5">{b.icon}</div>
+                <div className="text-stone-400 mt-0.5 flex-shrink-0">{b.icon}</div>
                 <div>
                   <p className="text-xs font-medium text-stone-700">{b.title}</p>
                   <p className="text-xs text-stone-400">{b.sub}</p>
@@ -353,7 +353,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
             {attributes && Object.keys(attributes).length > 0 && (
               <AccordionSection title="Specifications">
-                <dl className="grid grid-cols-2 gap-x-6 gap-y-2">
+                <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
                   {Object.entries(attributes).map(([key, val]) => {
                     if (Array.isArray(val)) {
                       return (
@@ -420,11 +420,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
       {/* Reviews */}
       {product.reviews.length > 0 && (
-        <section className="mt-20 border-t border-stone-100 pt-16">
-          <div className="flex items-end justify-between mb-8">
+        <section className="mt-12 sm:mt-16 lg:mt-20 border-t border-stone-100 pt-10 sm:pt-12 lg:pt-16">
+          <div className="flex items-end justify-between mb-6 sm:mb-8">
             <div>
-              <h2 className="text-2xl font-light text-stone-900 mb-2">Customer Reviews</h2>
-              <div className="flex items-center gap-3">
+              <h2 className="text-xl sm:text-2xl font-light text-stone-900 mb-2">Customer Reviews</h2>
+              <div className="flex items-center flex-wrap gap-x-3 gap-y-1">
                 <StarRating rating={product.avgRating} size="md" />
                 <span className="text-stone-500 text-sm">
                   {product.avgRating} out of 5 · {product.reviewCount} {product.reviewCount === 1 ? 'review' : 'reviews'}
@@ -433,9 +433,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             {product.reviews.map((review) => (
-              <div key={review.id} className="bg-stone-50 p-6 rounded-sm">
+              <div key={review.id} className="bg-stone-50 p-5 sm:p-6 rounded-sm">
                 <div className="flex items-center justify-between mb-3">
                   <StarRating rating={review.rating} />
                   {review.isVerifiedPurchase && (

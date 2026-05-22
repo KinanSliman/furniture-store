@@ -153,7 +153,7 @@ export default function HomePage() {
     <div className="min-h-screen">
 
       {/* ── Hero ── */}
-      <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
+      <section className="relative h-[80vh] min-h-[480px] sm:min-h-[560px] lg:min-h-[640px] overflow-hidden">
         {HERO_SLIDES.map((s, i) => (
           <div
             key={i}
@@ -171,19 +171,19 @@ export default function HomePage() {
         <div className="relative h-full flex items-center">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div className="max-w-lg">
-              <p className="text-amber-400 text-xs tracking-[0.3em] uppercase mb-4 font-medium">
+              <p className="text-amber-400 text-[10px] sm:text-xs tracking-[0.3em] uppercase mb-3 sm:mb-4 font-medium">
                 New Collection 2026
               </p>
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light text-white leading-tight mb-6 whitespace-pre-line">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white leading-tight mb-4 sm:mb-6 whitespace-pre-line">
                 {slide.headline}
               </h1>
-              <p className="text-stone-300 text-lg font-light mb-8 leading-relaxed">
+              <p className="text-stone-300 text-base sm:text-lg font-light mb-6 sm:mb-8 leading-relaxed">
                 {slide.sub}
               </p>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
                 <Link
                   href={slide.ctaHref}
-                  className="inline-flex items-center gap-2 bg-white text-stone-900 px-7 py-3.5 text-sm font-medium tracking-wide hover:bg-amber-400 transition-colors"
+                  className="inline-flex items-center gap-2 bg-white text-stone-900 px-5 sm:px-7 py-3 sm:py-3.5 text-sm font-medium tracking-wide hover:bg-amber-400 transition-colors"
                 >
                   {slide.cta}
                   <ArrowRight className="w-4 h-4" />
@@ -213,8 +213,8 @@ export default function HomePage() {
 
       {/* ── Trust badges ── */}
       <section className="border-y border-stone-100 bg-stone-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
             {[
               { icon: <Truck className="w-5 h-5" />, label: 'Free Delivery', sub: 'On orders over $1,000' },
               { icon: <Shield className="w-5 h-5" />, label: '10-Year Warranty', sub: 'On all solid wood pieces' },
@@ -234,21 +234,21 @@ export default function HomePage() {
       </section>
 
       {/* ── Categories ── */}
-      <section className="py-20">
+      <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-light text-stone-900 mb-3">Shop by Room</h2>
-            <p className="text-stone-400">Curated collections for every space in your home</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-light text-stone-900 mb-2 sm:mb-3">Shop by Room</h2>
+            <p className="text-stone-400 text-sm sm:text-base">Curated collections for every space in your home</p>
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
               {Array(6).fill(0).map((_, i) => (
                 <div key={i} className="aspect-[3/4] bg-stone-100 animate-pulse rounded-sm" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
               {categories.map((cat) => (
                 <Link
                   key={cat.id}
@@ -275,12 +275,12 @@ export default function HomePage() {
       </section>
 
       {/* ── Featured Products ── */}
-      <section className="py-20 bg-stone-50">
+      <section className="py-12 sm:py-16 lg:py-20 bg-stone-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-12">
+          <div className="flex items-end justify-between mb-8 sm:mb-12">
             <div>
-              <h2 className="text-3xl font-light text-stone-900 mb-3">Featured Pieces</h2>
-              <p className="text-stone-400">Hand-picked from our latest collection</p>
+              <h2 className="text-2xl sm:text-3xl font-light text-stone-900 mb-2 sm:mb-3">Featured Pieces</h2>
+              <p className="text-stone-400 text-sm sm:text-base">Hand-picked from our latest collection</p>
             </div>
             <Link
               href="/shop"
@@ -291,7 +291,7 @@ export default function HomePage() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:gap-6">
               {Array(8).fill(0).map((_, i) => (
                 <div key={i}>
                   <div className="aspect-[4/5] bg-stone-200 animate-pulse rounded-sm mb-3" />
@@ -301,17 +301,17 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:gap-6">
               {featured.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
           )}
 
-          <div className="mt-12 text-center">
+          <div className="mt-10 sm:mt-12 text-center">
             <Link
               href="/shop"
-              className="inline-flex items-center gap-2 border border-stone-900 text-stone-900 px-8 py-3 text-sm font-medium tracking-wide hover:bg-stone-900 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 border border-stone-900 text-stone-900 px-6 sm:px-8 py-3 text-sm font-medium tracking-wide hover:bg-stone-900 hover:text-white transition-colors"
             >
               View All Products <ArrowRight className="w-4 h-4" />
             </Link>
@@ -320,7 +320,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Editorial Banner ── */}
-      <section className="relative h-[60vh] min-h-[400px] overflow-hidden">
+      <section className="relative h-[60vh] min-h-[360px] sm:min-h-[400px] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1600&auto=format&fit=crop"
           alt="Lumina Living interior"
@@ -328,17 +328,17 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-stone-900/60" />
         <div className="relative h-full flex items-center justify-center text-center">
-          <div className="max-w-lg px-6">
-            <p className="text-amber-400 text-xs tracking-[0.3em] uppercase mb-4">The Lumina Difference</p>
-            <h2 className="text-4xl sm:text-5xl font-light text-white mb-6 leading-tight">
+          <div className="max-w-lg px-4 sm:px-6">
+            <p className="text-amber-400 text-[10px] sm:text-xs tracking-[0.3em] uppercase mb-3 sm:mb-4">The Lumina Difference</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-white mb-4 sm:mb-6 leading-tight">
               Built to last,<br />designed to delight
             </h2>
-            <p className="text-stone-300 mb-8 leading-relaxed">
+            <p className="text-stone-300 text-sm sm:text-base mb-6 sm:mb-8 leading-relaxed">
               Every piece in our collection is crafted by skilled artisans using sustainably sourced materials — furniture you'll pass down to the next generation.
             </p>
             <Link
               href="/shop"
-              className="inline-flex items-center gap-2 bg-amber-400 text-stone-900 px-7 py-3.5 text-sm font-medium tracking-wide hover:bg-amber-300 transition-colors"
+              className="inline-flex items-center gap-2 bg-amber-400 text-stone-900 px-5 sm:px-7 py-3 sm:py-3.5 text-sm font-medium tracking-wide hover:bg-amber-300 transition-colors"
             >
               Explore the collection <ArrowRight className="w-4 h-4" />
             </Link>
@@ -347,17 +347,17 @@ export default function HomePage() {
       </section>
 
       {/* ── Reviews ── */}
-      <section className="py-20">
+      <section className="py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-light text-stone-900 mb-3">What our customers say</h2>
-            <div className="flex items-center justify-center gap-1 mt-2">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-light text-stone-900 mb-2 sm:mb-3">What our customers say</h2>
+            <div className="flex flex-wrap items-center justify-center gap-1 mt-2">
               {Array(5).fill(0).map((_, i) => <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />)}
               <span className="ml-2 text-sm text-stone-500">4.9 · 2,400+ reviews</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
             {[
               {
                 name: 'Emma T.', location: 'New York',
@@ -375,11 +375,11 @@ export default function HomePage() {
                 product: 'Marble & Walnut Coffee Table',
               },
             ].map((r) => (
-              <div key={r.name} className="bg-stone-50 p-8 rounded-sm">
-                <div className="flex gap-0.5 mb-4">
+              <div key={r.name} className="bg-stone-50 p-6 sm:p-8 rounded-sm">
+                <div className="flex gap-0.5 mb-3 sm:mb-4">
                   {Array(5).fill(0).map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />)}
                 </div>
-                <p className="text-stone-600 text-sm leading-relaxed mb-6 italic">"{r.review}"</p>
+                <p className="text-stone-600 text-sm leading-relaxed mb-4 sm:mb-6 italic">"{r.review}"</p>
                 <div>
                   <p className="text-sm font-medium text-stone-900">{r.name}</p>
                   <p className="text-xs text-stone-400">{r.location} · Verified Buyer</p>
@@ -392,11 +392,11 @@ export default function HomePage() {
       </section>
 
       {/* ── Newsletter ── */}
-      <section className="bg-stone-900 py-16">
+      <section className="bg-stone-900 py-12 sm:py-14 lg:py-16">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
-          <p className="text-amber-400 text-xs tracking-[0.3em] uppercase mb-3">Stay in the loop</p>
-          <h2 className="text-3xl font-light text-white mb-4">Design inspiration, first</h2>
-          <p className="text-stone-400 text-sm mb-8">
+          <p className="text-amber-400 text-[10px] sm:text-xs tracking-[0.3em] uppercase mb-3">Stay in the loop</p>
+          <h2 className="text-2xl sm:text-3xl font-light text-white mb-3 sm:mb-4">Design inspiration, first</h2>
+          <p className="text-stone-400 text-sm mb-6 sm:mb-8">
             Join our community of design lovers. Get early access to new collections, styling tips, and exclusive member discounts.
           </p>
           <form

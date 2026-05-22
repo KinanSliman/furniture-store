@@ -41,9 +41,14 @@ async function seed() {
 
     // ── Admin User ────────────────────────────────────────────────────────────
     console.log('Creating admin user...');
-    const adminHash = await hashPassword('admin123');
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@luminaliving.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    if (!process.env.ADMIN_PASSWORD) {
+      console.warn('⚠️  ADMIN_PASSWORD not set — falling back to default. Set it in .env.local before deploying.');
+    }
+    const adminHash = await hashPassword(adminPassword);
     const [admin] = await db.insert(users).values({
-      email: 'admin@luminaliving.com',
+      email: adminEmail,
       passwordHash: adminHash,
       firstName: 'Admin',
       lastName: 'Lumina',
